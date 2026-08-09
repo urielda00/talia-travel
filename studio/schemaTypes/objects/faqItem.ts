@@ -20,5 +20,10 @@ export const faqItem = defineType({
     select: {
       title: 'question',
     },
+    prepare({title}) {
+      return {
+        title: title || 'שאלה ללא כותרת',
+      }
+    },
   },
 })

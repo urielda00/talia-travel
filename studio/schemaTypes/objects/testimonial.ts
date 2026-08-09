@@ -41,5 +41,12 @@ export const testimonial = defineType({
       subtitle: 'role',
       media: 'image',
     },
+    prepare({title, subtitle, media}) {
+      return {
+        title: title || 'המלצה ללא שם',
+        subtitle: subtitle || undefined,
+        media,
+      }
+    },
   },
 })

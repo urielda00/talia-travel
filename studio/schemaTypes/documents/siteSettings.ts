@@ -2,17 +2,17 @@ import {defineArrayMember, defineField, defineType} from 'sanity'
 
 export const siteSettings = defineType({
   name: 'siteSettings',
-  title: 'הגדרות אתר',
+  title: 'הגדרות האתר',
   type: 'document',
   groups: [
-    {name: 'brand', title: 'מותג', default: true},
-    {name: 'about', title: 'אודות'},
-    {name: 'contact', title: 'יצירת קשר'},
+    {name: 'brand', title: 'מותג ולוגו', default: true},
+    {name: 'about', title: 'אודות המארחת'},
+    {name: 'contact', title: 'פרטי קשר'},
     {name: 'social', title: 'רשתות חברתיות'},
     {name: 'testimonials', title: 'המלצות'},
-    {name: 'cta', title: 'הנעה לפעולה'},
-    {name: 'footer', title: 'כותרת תחתונה'},
-    {name: 'seo', title: 'ברירות מחדל ל-SEO'},
+    {name: 'cta', title: 'קריאה לפעולה'},
+    {name: 'footer', title: 'תחתית האתר'},
+    {name: 'seo', title: 'SEO ברירת מחדל'},
   ],
   fields: [
     defineField({name: 'brandName', title: 'שם המותג', type: 'string', group: 'brand'}),
@@ -70,7 +70,13 @@ export const siteSettings = defineType({
       group: 'cta',
     }),
 
-    defineField({name: 'footerText', title: 'טקסט כותרת תחתונה', type: 'text', rows: 3, group: 'footer'}),
+    defineField({
+      name: 'footerText',
+      title: 'טקסט בתחתית האתר',
+      type: 'text',
+      rows: 3,
+      group: 'footer',
+    }),
 
     defineField({
       name: 'defaultSeoTitle',

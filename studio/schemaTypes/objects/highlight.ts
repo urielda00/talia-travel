@@ -20,13 +20,19 @@ export const highlight = defineType({
       name: 'icon',
       title: 'שם אייקון',
       type: 'string',
-      description: 'מזהה טקסטואלי אופציונלי לאייקון',
+      description: 'שם האייקון שהוגדר באתר. אפשר להשאיר ריק אם אין צורך באייקון.',
     }),
   ],
   preview: {
     select: {
       title: 'title',
       subtitle: 'text',
+    },
+    prepare({title, subtitle}) {
+      return {
+        title: title || 'נקודת עניין ללא כותרת',
+        subtitle: subtitle || undefined,
+      }
     },
   },
 })

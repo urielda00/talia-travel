@@ -1,16 +1,30 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
+function formatTripDate(value?: string) {
+  if (!value) return undefined
+
+  const date = new Date(`${value}T00:00:00Z`)
+  if (Number.isNaN(date.getTime())) return value
+
+  return new Intl.DateTimeFormat('he-IL', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date)
+}
+
 export const trip = defineType({
   name: 'trip',
   title: 'טיול',
   type: 'document',
   groups: [
-    {name: 'general', title: 'כללי', default: true},
-    {name: 'hero', title: 'אזור פתיחה'},
-    {name: 'intro', title: 'מבוא'},
-    {name: 'content', title: 'תוכן'},
+    {name: 'general', title: 'פרטים כלליים', default: true},
+    {name: 'hero', title: 'פתיח ראשי'},
+    {name: 'intro', title: 'מבוא לטיול'},
+    {name: 'content', title: 'תוכן ומסלול'},
     {name: 'pricing', title: 'מחיר ותשלום'},
-    {name: 'cta', title: 'הנעה לפעולה'},
+    {name: 'cta', title: 'קריאה לפעולה'},
     {name: 'faq', title: 'שאלות נפוצות'},
     {name: 'seo', title: 'SEO'},
   ],
@@ -26,7 +40,13 @@ export const trip = defineType({
       group: 'general',
     }),
     defineField({name: 'tripType', title: 'סוג הטיול', type: 'string', group: 'general'}),
-    defineField({name: 'active', title: 'טיול פעיל', type: 'boolean', group: 'general'}),
+    defineField({
+      name: 'active',
+      title: 'טיול פעיל',
+      type: 'boolean',
+      group: 'general',
+      description: 'הפעילו כדי להציג את הטיול באתר.',
+    }),
 
     defineField({
       name: 'heroImage',
@@ -166,12 +186,17 @@ export const trip = defineType({
       title: 'title',
       destination: 'destination',
       startDate: 'startDate',
+      endDate: 'endDate',
       media: 'heroImage',
     },
-    prepare({title, destination, startDate, media}) {
+    prepare({title, destination, startDate, endDate, media}) {
+      const dates = [formatTripDate(startDate), formatTripDate(endDate)]
+        .filter(Boolean)
+        .join(' – ')
+
       return {
         title: title || 'טיול ללא כותרת',
-        subtitle: [destination, startDate].filter(Boolean).join(' · '),
+        subtitle: [destination, dates].filter(Boolean).join(' · '),
         media,
       }
     },
