@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+build/
+**/build/
+
+# Sanity generated files
+.sanity/
+**/.sanity/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Coverage
+coverage/
+**/coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cache / temp
+.cache/
+**/.cache/
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
