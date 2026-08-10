@@ -1,4 +1,5 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
+import {hasImageAsset, isBlank, isValidDate} from '../validation'
 
 function formatTripDate(value?: string) {
   if (!value) return undefined
@@ -19,27 +20,53 @@ export const trip = defineType({
   title: 'טיול',
   type: 'document',
   groups: [
-    {name: 'general', title: 'פרטים כלליים', default: true},
-    {name: 'hero', title: 'פתיח ראשי'},
-    {name: 'intro', title: 'מבוא לטיול'},
-    {name: 'content', title: 'תוכן ומסלול'},
-    {name: 'pricing', title: 'מחיר ותשלום'},
-    {name: 'cta', title: 'קריאה לפעולה'},
+    {name: 'general', title: 'פרטי הטיול', default: true},
+    {name: 'opening', title: 'פתיחה'},
+    {name: 'content', title: 'תוכן הטיול'},
+    {name: 'pricing', title: 'מחיר ותנאים'},
     {name: 'faq', title: 'שאלות נפוצות'},
     {name: 'seo', title: 'SEO'},
   ],
   fields: [
-    defineField({name: 'title', title: 'שם הטיול', type: 'string', group: 'general'}),
-    defineField({name: 'destination', title: 'יעד', type: 'string', group: 'general'}),
-    defineField({name: 'startDate', title: 'תאריך התחלה', type: 'date', group: 'general'}),
-    defineField({name: 'endDate', title: 'תאריך סיום', type: 'date', group: 'general'}),
     defineField({
-      name: 'durationText',
-      title: 'משך הטיול',
+      name: 'title',
+      title: 'שם הטיול',
       type: 'string',
       group: 'general',
+      validation: (rule) => rule.required().error('יש להזין שם לטיול').custom((value) => !isBlank(value) || 'יש להזין שם לטיול'),
     }),
-    defineField({name: 'tripType', title: 'סוג הטיול', type: 'string', group: 'general'}),
+    defineField({
+      name: 'destination',
+      title: 'יעד',
+      type: 'string',
+      group: 'general',
+      validation: (rule) => rule.required().error('יש להזין יעד').custom((value) => !isBlank(value) || 'יש להזין יעד'),
+    }),
+    defineField({
+      name: 'startDate',
+      title: 'תאריך התחלה',
+      type: 'date',
+      group: 'general',
+      validation: (rule) => rule.required().error('יש להזין תאריך התחלה').custom((value) => !isValidDate(value) || 'יש להזין תאריך התחלה תקין'),
+    }),
+    defineField({
+      name: 'endDate',
+      title: 'תאריך סיום',
+      type: 'date',
+      group: 'general',
+      validation: (rule) => rule.required().error('יש להזין תאריך סיום').custom((value, context) => {
+        if (!isValidDate(value)) return 'יש להזין תאריך סיום תקין'
+        const startDate = context.document?.startDate
+        return !isValidDate(startDate) || value >= startDate || 'תאריך הסיום לא יכול להיות לפני תאריך ההתחלה'
+      }),
+    }),
+    defineField({
+      name: 'tripType',
+      title: 'סוג הטיול',
+      type: 'string',
+      group: 'general',
+      validation: (rule) => rule.required().error('יש להזין סוג טיול').custom((value) => !isBlank(value) || 'יש להזין סוג טיול'),
+    }),
     defineField({
       name: 'active',
       title: 'טיול פעיל',
@@ -52,44 +79,39 @@ export const trip = defineType({
       name: 'heroImage',
       title: 'תמונת פתיחה',
       type: 'image',
-      group: 'hero',
+      group: 'opening',
       options: {hotspot: true},
       fields: [
-        defineField({name: 'alt', title: 'טקסט חלופי', type: 'string'}),
+        defineField({
+          name: 'alt',
+          title: 'טקסט חלופי',
+          type: 'string',
+          validation: (rule) => rule.custom((value, context) => !hasImageAsset(context.parent) || !isBlank(value) || 'מומלץ להוסיף טקסט חלופי לתמונה').warning(),
+        }),
       ],
     }),
-    defineField({name: 'heroEyebrow', title: 'כותרת עליונה קצרה', type: 'string', group: 'hero'}),
-    defineField({name: 'heroHeadline', title: 'כותרת ראשית', type: 'string', group: 'hero'}),
     defineField({
       name: 'heroSubtitle',
-      title: 'כותרת משנה',
+      title: 'תיאור קצר',
       type: 'text',
       rows: 3,
-      group: 'hero',
-    }),
-    defineField({
-      name: 'primaryCtaLabel',
-      title: 'טקסט כפתור ראשי',
-      type: 'string',
-      group: 'hero',
-    }),
-    defineField({
-      name: 'whatsappCtaLabel',
-      title: 'טקסט כפתור WhatsApp',
-      type: 'string',
-      group: 'hero',
+      group: 'opening',
     }),
 
-    defineField({name: 'introHeading', title: 'כותרת המבוא', type: 'string', group: 'intro'}),
-    defineField({name: 'introBody', title: 'תוכן המבוא', type: 'blockContent', group: 'intro'}),
+    defineField({name: 'introBody', title: 'תיאור הטיול', type: 'blockContent', group: 'opening'}),
     defineField({
       name: 'introImage',
-      title: 'תמונת המבוא',
+      title: 'תמונה לצד התיאור',
       type: 'image',
-      group: 'intro',
+      group: 'opening',
       options: {hotspot: true},
       fields: [
-        defineField({name: 'alt', title: 'טקסט חלופי', type: 'string'}),
+        defineField({
+          name: 'alt',
+          title: 'טקסט חלופי',
+          type: 'string',
+          validation: (rule) => rule.custom((value, context) => !hasImageAsset(context.parent) || !isBlank(value) || 'מומלץ להוסיף טקסט חלופי לתמונה').warning(),
+        }),
       ],
     }),
 
@@ -99,6 +121,7 @@ export const trip = defineType({
       type: 'array',
       group: 'content',
       of: [defineArrayMember({type: 'highlight'})],
+      validation: (rule) => rule.max(6).warning('מומלץ להגביל לעד 6 נקודות עניין'),
     }),
     defineField({
       name: 'gallery',
@@ -106,6 +129,7 @@ export const trip = defineType({
       type: 'array',
       group: 'content',
       of: [defineArrayMember({type: 'galleryItem'})],
+      validation: (rule) => rule.max(30).warning('מומלץ להגביל את הגלריה לעד 30 תמונות'),
     }),
     defineField({
       name: 'videos',
@@ -126,19 +150,31 @@ export const trip = defineType({
       name: 'includedItems',
       title: 'מה כלול',
       type: 'array',
-      group: 'content',
+      group: 'pricing',
       of: [defineArrayMember({type: 'string'})],
     }),
     defineField({
       name: 'excludedItems',
       title: 'מה לא כלול',
       type: 'array',
-      group: 'content',
+      group: 'pricing',
       of: [defineArrayMember({type: 'string'})],
     }),
 
-    defineField({name: 'price', title: 'מחיר', type: 'number', group: 'pricing'}),
-    defineField({name: 'currency', title: 'מטבע', type: 'string', group: 'pricing'}),
+    defineField({
+      name: 'price',
+      title: 'מחיר',
+      type: 'number',
+      group: 'pricing',
+      validation: (rule) => rule.required().error('יש להזין מחיר').min(0).error('המחיר לא יכול להיות שלילי'),
+    }),
+    defineField({
+      name: 'currency',
+      title: 'מטבע',
+      type: 'string',
+      group: 'pricing',
+      validation: (rule) => rule.required().error('יש להזין מטבע').custom((value) => !isBlank(value) || 'יש להזין מטבע'),
+    }),
     defineField({
       name: 'priceQualifier',
       title: 'הבהרת מחיר',
@@ -159,24 +195,35 @@ export const trip = defineType({
       group: 'pricing',
     }),
 
-    defineField({name: 'ctaHeading', title: 'כותרת הנעה לפעולה', type: 'string', group: 'cta'}),
-    defineField({name: 'ctaText', title: 'טקסט הנעה לפעולה', type: 'blockContent', group: 'cta'}),
-
     defineField({
       name: 'faq',
       title: 'שאלות נפוצות',
       type: 'array',
       group: 'faq',
       of: [defineArrayMember({type: 'faqItem'})],
+      validation: (rule) => rule.max(12).error('ניתן להוסיף עד 12 שאלות נפוצות'),
     }),
 
-    defineField({name: 'seoTitle', title: 'כותרת SEO', type: 'string', group: 'seo'}),
+    defineField({
+      name: 'seoTitle',
+      title: 'כותרת SEO',
+      type: 'string',
+      group: 'seo',
+      validation: (rule) => [
+        rule.custom((value) => value === undefined || !isBlank(value) || 'כותרת SEO לא יכולה להכיל רווחים בלבד'),
+        rule.max(60).warning('מומלץ להגביל את כותרת ה-SEO ל-60 תווים'),
+      ],
+    }),
     defineField({
       name: 'seoDescription',
       title: 'תיאור SEO',
       type: 'text',
       rows: 3,
       group: 'seo',
+      validation: (rule) => [
+        rule.custom((value) => value === undefined || !isBlank(value) || 'תיאור SEO לא יכול להכיל רווחים בלבד'),
+        rule.max(160).warning('מומלץ להגביל את תיאור ה-SEO ל-160 תווים'),
+      ],
     }),
     defineField({
       name: 'socialShareImage',
@@ -185,7 +232,12 @@ export const trip = defineType({
       group: 'seo',
       options: {hotspot: true},
       fields: [
-        defineField({name: 'alt', title: 'טקסט חלופי', type: 'string'}),
+        defineField({
+          name: 'alt',
+          title: 'טקסט חלופי',
+          type: 'string',
+          validation: (rule) => rule.custom((value, context) => !hasImageAsset(context.parent) || !isBlank(value) || 'מומלץ להוסיף טקסט חלופי לתמונה').warning(),
+        }),
       ],
     }),
   ],

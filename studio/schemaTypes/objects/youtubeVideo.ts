@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {isYouTubeUrl} from '../validation'
 
 export const youtubeVideo = defineType({
   name: 'youtubeVideo',
@@ -9,7 +10,7 @@ export const youtubeVideo = defineType({
       name: 'youtubeUrl',
       title: 'קישור ל-YouTube',
       type: 'url',
-      validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
+      validation: (rule) => rule.required().error('יש להזין קישור ל-YouTube').custom((value) => isYouTubeUrl(value) || 'יש להזין קישור תקין ל-YouTube או ל-YouTube Shorts'),
     }),
     defineField({name: 'title', title: 'כותרת', type: 'string'}),
     defineField({name: 'caption', title: 'כיתוב', type: 'string'}),

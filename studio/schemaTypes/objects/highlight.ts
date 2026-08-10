@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {isBlank} from '../validation'
 
 export const highlight = defineType({
   name: 'highlight',
@@ -9,12 +10,14 @@ export const highlight = defineType({
       name: 'title',
       title: 'כותרת',
       type: 'string',
+      validation: (rule) => rule.required().error('יש להזין כותרת').custom((value) => !isBlank(value) || 'יש להזין כותרת'),
     }),
     defineField({
       name: 'text',
       title: 'תיאור',
       type: 'text',
       rows: 3,
+      validation: (rule) => rule.required().error('יש להזין תיאור').custom((value) => !isBlank(value) || 'יש להזין תיאור'),
     }),
     defineField({
       name: 'icon',
