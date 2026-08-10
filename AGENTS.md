@@ -5,18 +5,20 @@
 This repository contains the Talia Travels project.
 
 Current structure:
+
 - `studio/` - Sanity Studio
-- frontend will be added later
+- `web/` - React + Vite + TypeScript frontend
 
 Always treat the repository root as the main workspace.
 
 ## Important working rules
 
+- Read this `AGENTS.md` before starting every task.
 - Do not scan, inspect, summarize, or reason over generated dependency folders unless explicitly required.
 - Do not recursively traverse large generated directories.
 - Prefer targeted inspection of source and configuration files only.
 - Do not modify unrelated files.
-- Keep changes small and task-focused.
+- Keep changes task-focused.
 - Before editing, inspect only the files relevant to the requested task.
 - After editing, run only the checks relevant to the changed area unless explicitly asked for broader verification.
 
@@ -42,6 +44,24 @@ Do not inspect or recursively search inside:
 
 These directories may be used by build tools, but should not be treated as source code.
 
+## Current design phase
+
+The project is currently in a frontend-first visual design phase.
+
+The immediate goal is to create an excellent standalone boutique travel landing page before deciding which content will later be editable through Sanity.
+
+During this phase:
+
+- visual quality takes priority
+- frontend content may be hardcoded/mock content
+- do not let the Sanity schema dictate the visual composition
+- do not modify Sanity schemas unless explicitly requested
+- do not spend time wiring new UI sections to Sanity
+- do not remove the existing Sanity integration, but it does not need to drive the redesigned page yet
+- when necessary, isolate or temporarily bypass existing Sanity-driven rendering cleanly rather than deleting the integration
+
+Only after the visual design is approved will editable content be mapped back to Sanity.
+
 ## Sanity project
 
 Sanity Studio lives in:
@@ -49,6 +69,7 @@ Sanity Studio lives in:
 `studio/`
 
 Important:
+
 - Do not recreate the Sanity project.
 - Do not change the Sanity project ID or dataset unless explicitly requested.
 - Do not deploy unless explicitly requested.
@@ -61,22 +82,91 @@ Important:
 
 ## Frontend
 
-The frontend will later use React + Vite and Netlify.
+Frontend lives in:
 
-Until frontend work is explicitly requested:
-- Do not create Next.js.
-- Do not create frontend code.
-- Do not install frontend libraries.
+`web/`
+
+Stack:
+
+- React
+- Vite
+- TypeScript
+
+Frontend priorities:
+
+- premium visual quality
+- boutique travel/editorial feel
+- mobile-first
+- excellent responsive behavior
+- semantic HTML
+- accessibility
+- fast loading
+- maintainable component structure
+
+Do not introduce a heavy UI framework.
+
+Do not recreate the frontend project.
+
+Prefer custom React components and CSS using the existing project structure.
+
+## Design direction
+
+Talia Travels should feel:
+
+- premium
+- boutique
+- feminine
+- warm
+- editorial
+- travel-focused
+- photographic
+- elegant
+- custom-designed rather than template-based
+
+Avoid:
+
+- SaaS/dashboard aesthetics
+- table-like UI
+- excessive generic cards
+- wireframe-looking layouts
+- repetitive section structures
+- unnecessary borders
+- excessive whitespace without compositional purpose
+- copying another website one-to-one
+
+The client likes the visual richness and level of:
+`https://womentravel.co.il/secretforest-october/`
+
+Use it only as a quality/style reference.
+Do not duplicate its exact layout, typography, assets, copy, or composition.
+
+## Media
+
+Images:
+
+- final production images will be hosted through Sanity
+- during the visual design phase, temporary/local/mock images may be used where required
+- layouts must support responsive image crops
+- photography should be a major part of the visual experience
+
+Video:
+
+- prefer YouTube and YouTube Shorts
+- Shorts should visually use vertical 9:16 presentation
+- do not host large videos in the repository or Sanity
+- embeds should eventually be lazy-loaded
+- do not load YouTube iframes before interaction when implementing production media behavior
 
 ## Dependencies
 
 - Do not add dependencies unless clearly necessary.
-- Prefer built-in Sanity/React capabilities.
+- Prefer built-in React/CSS/browser capabilities.
 - Explain any new dependency before adding it when the task does not explicitly require one.
 
 ## Git hygiene
 
 Never commit:
+
 - secrets
 - `.env` files
 - `node_modules`
@@ -89,33 +179,17 @@ Respect the root `.gitignore`.
 
 For each task:
 
-1. Inspect only relevant files.
-2. State a short implementation plan.
-3. Make the smallest correct change.
-4. Run relevant validation/build checks.
-5. Fix errors caused by the change.
-6. Report:
+1. Read `AGENTS.md`.
+2. Inspect only relevant files.
+3. State a short implementation plan.
+4. Make the requested change.
+5. Run relevant validation/build checks.
+6. Fix errors caused by the change.
+7. Report:
    - files created
    - files modified
    - checks run
    - results
-7. Stop after the requested task.
+8. Stop after the requested task.
 
 Do not continue into adjacent tasks without being asked.
-
-## Product direction
-
-This is a premium boutique travel landing page.
-
-Priorities:
-- premium visual experience
-- fast loading
-- mobile-first
-- simple content management
-- minimal ongoing developer maintenance
-- media should be handled efficiently
-
-For video:
-- prefer externally hosted YouTube / YouTube Shorts content
-- Sanity should store references/URLs, not large video files
-- frontend should later lazy-load video embeds

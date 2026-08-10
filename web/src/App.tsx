@@ -1,93 +1,71 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import './components/foundation.css'
-import { Button, Container, Divider, Section, SectionHeading, TextLink } from './components/foundation'
+import { Container } from './components/foundation'
+import { Hero } from './components/sections/Hero'
+import { TripStory } from './components/sections/TripStory'
+import { Details } from './components/sections/Details'
+import { Contact } from './components/sections/Contact'
 import { sanityClient } from './lib/sanity'
-import { CONNECTIVITY_QUERY } from './lib/queries'
-import type { ConnectivityData } from './types/sanity'
+import { LANDING_PAGE_QUERY } from './lib/queries'
+import { getWhatsAppUrl } from './lib/format'
+import type { LandingPageData } from './types/sanity'
 
 type LoadState =
   | { status: 'loading' }
-  | { status: 'success'; data: ConnectivityData }
-  | { status: 'error'; message: string }
-
-function ConnectivityStatus({ loadState }: { loadState: LoadState }) {
-  if (loadState.status === 'loading') return <p role="status">מתבצעת בדיקת חיבור ל־Sanity…</p>
-
-  if (loadState.status === 'error') {
-    return <p role="alert">החיבור ל־Sanity לא זמין כרגע. {loadState.message}</p>
-  }
-
-  return (
-    <p>
-      <strong>{loadState.data.siteSettings?.brandName || 'Talia Travels'}</strong> · {loadState.data.activeTripCount} טיולים פעילים
-      {loadState.data.firstActiveTrip && ` · הבא: ${loadState.data.firstActiveTrip.title}`}
-    </p>
-  )
-}
+  | { status: 'success'; data: LandingPageData }
+  | { status: 'error' }
 
 function App() {
   const [loadState, setLoadState] = useState<LoadState>({ status: 'loading' })
 
   useEffect(() => {
     const controller = new AbortController()
-
-    async function loadContent() {
-      try {
-        const data = await sanityClient.fetch<ConnectivityData>(CONNECTIVITY_QUERY, {}, { signal: controller.signal })
-        setLoadState({ status: 'success', data })
-      } catch (error) {
-        if (!controller.signal.aborted) setLoadState({ status: 'error', message: error instanceof Error ? error.message : 'שגיאה לא צפויה' })
-      }
-    }
-
-    void loadContent()
+    sanityClient.fetch<LandingPageData>(LANDING_PAGE_QUERY, {}, { signal: controller.signal })
+      .then((data) => setLoadState({ status: 'success', data }))
+      .catch(() => {
+        if (!controller.signal.aborted) setLoadState({ status: 'error' })
+      })
     return () => controller.abort()
   }, [])
 
+  useEffect(() => {
+    if (loadState.status !== 'success' || !loadState.data.trip) return
+    const { trip, siteSettings } = loadState.data
+    document.title = trip.seoTitle || siteSettings?.defaultSeoTitle || `${trip.title} | ${siteSettings?.brandName || 'Talia Travels'}`
+    const description = trip.seoDescription || siteSettings?.defaultSeoDescription
+    if (description) {
+      let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]')
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.name = 'description'
+        document.head.append(meta)
+      }
+      meta.content = description
+    }
+  }, [loadState])
+
+  if (loadState.status === 'loading') return <PageState kind="loading" title="המסע כבר מתקרב" text="מכינות עבורך את כל הפרטים…" />
+  if (loadState.status === 'error') return <PageState title="משהו השתבש בדרך" text="לא הצלחנו לטעון את פרטי הטיול כרגע. כדאי לנסות שוב בעוד רגע." />
+  if (!loadState.data.trip) return <PageState title="המסע הבא נרקם עכשיו" text="בקרוב יופיעו כאן כל הפרטים על הטיול הבא של Talia Travels." />
+
+  const { trip, siteSettings } = loadState.data
+  const whatsappUrl = getWhatsAppUrl(siteSettings?.whatsappNumber, `היי, אשמח לשמוע עוד על ${trip.title}`)
+
   return (
-    <main className="style-preview">
-      <Section>
-        <Container className="style-preview__intro">
-          <p className="eyebrow">Talia Travels · Style Preview</p>
-          <h1>מסעות שנשארים איתך הרבה אחרי שחוזרים הביתה</h1>
-          <p>יסודות עיצוב זמניים לחוויית נסיעות אישית, חמה ומדויקת — עם טיפוגרפיה קריאה, מרווח נשימה ופלטה טבעית.</p>
-        </Container>
-      </Section>
-
-      <Divider />
-
-      <Section className="style-preview__surface" fullWidth>
-        <Container className="style-preview__grid">
-          <div>
-            <SectionHeading eyebrow="היררכיית תוכן" title="מקום לסיפורים יפים" >
-              <p>כותרת אלגנטית מובילה את העין, והטקסט המשני נשאר פשוט, נעים לקריאה ומאוזן גם במסכים קטנים.</p>
-            </SectionHeading>
-            <div className="style-preview__actions">
-              <Button>לגלות את המסע</Button>
-              <Button variant="secondary">לפרטים נוספים</Button>
-              <TextLink href="#connectivity">בדיקת חיבור</TextLink>
-            </div>
-          </div>
-          <article className="style-preview__card">
-            <p className="eyebrow">Surface example</p>
-            <h3>פרטים קטנים, תחושה גדולה</h3>
-            <p>משטח בהיר, גבול עדין וקצב מרווחים עקבי עבור כרטיסי מידע ותוכן עתידי.</p>
-            <TextLink href="#foundation">לקריאה נוספת</TextLink>
-          </article>
-        </Container>
-      </Section>
-
-      <Section id="connectivity">
-        <Container narrow>
-          <div className="style-preview__connectivity">
-            <span className="style-preview__status">SANITY · CONNECTIVITY</span>
-            <ConnectivityStatus loadState={loadState} />
-          </div>
-        </Container>
-      </Section>
-    </main>
+    <div className="landing-page">
+      <Hero trip={trip} settings={siteSettings} whatsappUrl={whatsappUrl} />
+      <main>
+        <TripStory trip={trip} />
+        <Details trip={trip} settings={siteSettings} whatsappUrl={whatsappUrl} />
+      </main>
+      <Contact trip={trip} settings={siteSettings} whatsappUrl={whatsappUrl} />
+    </div>
   )
+}
+
+function PageState({ title, text, kind }: { title: string; text: string; kind?: 'loading' }) {
+  return <main className="page-state"><Container narrow><p className="eyebrow">Talia Travels</p><h1>{title}</h1><p>{text}</p>{kind && <span className="page-state__loader" aria-hidden="true" />}</Container></main>
 }
 
 export default App

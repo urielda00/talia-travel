@@ -21,11 +21,11 @@
 }
 
 .section-heading {
-  max-width: var(--heading-width);
+  max-width: 48rem;
 }
 
 .section-heading h2 {
-  margin: var(--space-2) 0 0;
+  margin: .55rem 0 0;
 }
 
 .section-heading__description {
@@ -38,7 +38,7 @@
   color: var(--color-accent);
   font-size: var(--font-size-meta);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   line-height: var(--line-height-meta);
   text-transform: uppercase;
 }
@@ -47,10 +47,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.875rem;
-  padding: 0.675rem var(--space-5);
+  min-height: 3.25rem;
+  padding: .82rem 1.7rem;
   border: 1px solid transparent;
-  border-radius: 0.2rem;
+  border-radius: 999px;
   cursor: pointer;
   font: inherit;
   font-size: var(--font-size-small);
@@ -67,6 +67,7 @@
 
 .button--primary:hover {
   background: var(--color-accent-hover);
+  transform: translateY(-2px);
 }
 
 .button--secondary {

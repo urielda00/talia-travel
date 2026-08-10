@@ -155,3 +155,8 @@ export interface ConnectivityData {
   activeTripCount: number
   firstActiveTrip: Pick<Trip, '_id' | 'title'> | null
 }
+
+export interface LandingPageData {
+  trip: Trip | null
+  siteSettings: SiteSettings | null
+}
