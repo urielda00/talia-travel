@@ -1,0 +1,32 @@
+#root {
+  min-height: 100vh;
+}
+
+main {
+  width: min(100% - 2rem, 42rem);
+  margin-inline: auto;
+  padding-block: 4rem;
+}
+
+h1,
+h2 {
+  line-height: 1.2;
+}
+
+dl {
+  display: grid;
+  gap: 1rem;
+}
+
+dl > div {
+  padding-block: 0.75rem;
+  border-block-end: 1px solid #d8d8d8;
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin: 0.25rem 0 0;
+}

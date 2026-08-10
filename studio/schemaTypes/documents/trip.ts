@@ -47,7 +47,7 @@ export const trip = defineType({
       title: 'תאריך התחלה',
       type: 'date',
       group: 'general',
-      validation: (rule) => rule.required().error('יש להזין תאריך התחלה').custom((value) => !isValidDate(value) || 'יש להזין תאריך התחלה תקין'),
+      validation: (rule) => rule.required().error('יש להזין תאריך התחלה').custom((value) => isValidDate(value) || 'יש להזין תאריך התחלה תקין'),
     }),
     defineField({
       name: 'endDate',
