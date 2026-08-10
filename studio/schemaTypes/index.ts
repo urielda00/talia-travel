@@ -6,6 +6,7 @@ import {galleryItem} from './objects/galleryItem'
 import {highlight} from './objects/highlight'
 import {itineraryDay} from './objects/itineraryDay'
 import {testimonial} from './objects/testimonial'
+import {youtubeVideo} from './objects/youtubeVideo'
 
 export const schemaTypes = [
   trip,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   itineraryDay,
   faqItem,
   testimonial,
+  youtubeVideo,
 ]

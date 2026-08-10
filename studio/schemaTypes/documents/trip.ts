@@ -108,6 +108,14 @@ export const trip = defineType({
       of: [defineArrayMember({type: 'galleryItem'})],
     }),
     defineField({
+      name: 'videos',
+      title: 'סרטונים',
+      description: 'הדביקי קישור ל-YouTube או ל-YouTube Shorts.',
+      type: 'array',
+      group: 'content',
+      of: [defineArrayMember({type: 'youtubeVideo'})],
+    }),
+    defineField({
       name: 'itinerary',
       title: 'מסלול הטיול',
       type: 'array',
