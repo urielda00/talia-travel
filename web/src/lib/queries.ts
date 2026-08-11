@@ -47,7 +47,20 @@ export const HERO_TRIP_QUERY = defineQuery(/* groq */ `
     destination,
     heroDescription,
     startDate,
-    endDate
+    endDate,
+    storyEyebrow,
+    storyHeadingLineOne,
+    storyHeadingLineTwo,
+    storySupportingHeading,
+    storyParagraphOne,
+    storyParagraphTwo,
+    storyParagraphThree,
+    storyClosingParagraph,
+    storyWordOne,
+    storyWordTwo,
+    storyWordThree,
+    storyMainImage { asset },
+    storySecondaryImage { asset }
   }
 `)
 

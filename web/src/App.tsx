@@ -13,15 +13,35 @@ import {
   type HeroTripDocument,
 } from './lib/heroTrip'
 import { CONTACT_SOCIAL_SETTINGS_QUERY, HERO_TRIP_QUERY } from './lib/queries'
-import { sanityClient } from './lib/sanity'
+import { sanityClient, urlForImage } from './lib/sanity'
 import {
   FALLBACK_CONTACT_SOCIAL_SETTINGS,
   withContactSocialFallbacks,
   type ContactSocialSettings,
 } from './lib/siteSettings'
+import {
+  FALLBACK_STORY_TRIP,
+  resolveStoryTrip,
+  splitStoryEmphasis,
+  type StoryTripContent,
+  type StoryTripDocument,
+} from './lib/storyTrip'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
+
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument
+
+function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
+  if (!image?.asset) return fallback
+
+  try {
+    const url = urlForImage(image).auto('format').url()
+    return /^https:\/\//.test(url) ? url : fallback
+  } catch {
+    return fallback
+  }
+}
 
 function getWhatsappMessage(destination: string): string {
   return `היי טליה, הגעתי מדף הנחיתה ורציתי לשמוע על הטיול ל${destination}`
@@ -163,6 +183,7 @@ function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
   const [siteSettings, setSiteSettings] = useState(FALLBACK_CONTACT_SOCIAL_SETTINGS)
   const [heroTrip, setHeroTrip] = useState<HeroTripContent>(FALLBACK_HERO_TRIP)
+  const [storyTrip, setStoryTrip] = useState<StoryTripContent>(FALLBACK_STORY_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -176,9 +197,12 @@ function App() {
       .catch(() => undefined)
 
     sanityClient
-      .fetch<HeroTripDocument | null>(HERO_TRIP_QUERY)
+      .fetch<ActiveTripDocument | null>(HERO_TRIP_QUERY)
       .then((trip) => {
-        if (!cancelled) setHeroTrip(resolveHeroTrip(trip))
+        if (!cancelled) {
+          setHeroTrip(resolveHeroTrip(trip))
+          setStoryTrip(resolveStoryTrip(trip))
+        }
       })
       .catch(() => undefined)
 
@@ -190,6 +214,11 @@ function App() {
   const whatsappMessage = getWhatsappMessage(heroTrip.destination)
   const whatsappUrl = `${whatsappBase}?text=${encodeURIComponent(whatsappMessage)}`
   const heroDuration = getHeroDuration(heroTrip.startDate, heroTrip.endDate)
+  const storyParagraphThree = splitStoryEmphasis(storyTrip.storyParagraphThree)
+  const storyMainFallback = asset('img9')
+  const storySecondaryFallback = asset('img10')
+  const storyMainImage = getStoryImageUrl(storyTrip.storyMainImage, storyMainFallback)
+  const storySecondaryImage = getStoryImageUrl(storyTrip.storySecondaryImage, storySecondaryFallback)
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
 
@@ -218,18 +247,18 @@ function App() {
           <img className="section-brand-mark section-brand-mark--story" src={asset('logo')} alt="" aria-hidden="true" />
           <div className="story content-container">
             <div className="story__copy">
-              <p className="section-eyebrow">הסיפור של המסע</p>
-              <h2 id="story-title">שתי ערים.<br /><em>עולם שלם של ניגודים.</em></h2>
-              <p className="story__accent">כאן הניגודים הופכים לחוויה</p>
-              <p className="story__lead">דובאי ואבו דאבי הן הרבה יותר ממגדלים נוצצים. זהו מפגש מסקרן בין מסורת לעתיד, בין שווקים ריחניים למסעדות מעולות ובין ים כחול לשקט הגדול של המדבר.</p>
-              <p>יצרתי עבורך מסע שבו כל פרט כבר מתוכנן: טיסות נוחות, מלונות ברמה גבוהה, מסלול עשיר שאינו עמוס, קבוצה קטנה וליווי אישי — מהשיחה הראשונה ועד החזרה הביתה.</p>
-              <p>נצא לגלות מקומות מפתיעים, נאכל טוב, נצטלם, נצחק ונעצור לקפה מול הנוף. לצד כל החוויות, יישאר גם זמן <strong>פשוט להיות בחופשה.</strong></p>
-              <p className="story__promise">אם הגיע הזמן לעצור הכול ולתת לעצמך כמה ימים של חופש אמיתי — המסע הזה נוצר בשבילך.</p>
+              <p className="section-eyebrow">{storyTrip.storyEyebrow}</p>
+              <h2 id="story-title">{storyTrip.storyHeadingLineOne}<br /><em>{storyTrip.storyHeadingLineTwo}</em></h2>
+              <p className="story__accent">{storyTrip.storySupportingHeading}</p>
+              <p className="story__lead">{storyTrip.storyParagraphOne}</p>
+              <p>{storyTrip.storyParagraphTwo}</p>
+              <p>{storyParagraphThree.text}{storyParagraphThree.text && ' '}<strong>{storyParagraphThree.emphasis}</strong></p>
+              <p className="story__promise">{storyTrip.storyClosingParagraph}</p>
             </div>
             <div className="story__visual" aria-label="נופים וחוויות מאיחוד האמירויות">
-              <figure className="story__image story__image--main"><img src={asset('img9')} alt="דובאי מוארת בשעות הערב" loading="lazy" /></figure>
-              <figure className="story__image story__image--accent"><img src={asset('img10')} alt="שקיעה זהובה במדבר" loading="lazy" /></figure>
-              <p><span>עיר</span><i aria-hidden="true">·</i><span>מדבר</span><i aria-hidden="true">·</i><span>ים</span></p>
+              <figure className="story__image story__image--main"><img src={storyMainImage} alt="דובאי מוארת בשעות הערב" loading="lazy" onError={({ currentTarget }) => { currentTarget.onerror = null; currentTarget.src = storyMainFallback }} /></figure>
+              <figure className="story__image story__image--accent"><img src={storySecondaryImage} alt="שקיעה זהובה במדבר" loading="lazy" onError={({ currentTarget }) => { currentTarget.onerror = null; currentTarget.src = storySecondaryFallback }} /></figure>
+              <p><span>{storyTrip.storyWordOne}</span><i aria-hidden="true">·</i><span>{storyTrip.storyWordTwo}</span><i aria-hidden="true">·</i><span>{storyTrip.storyWordThree}</span></p>
             </div>
           </div>
           <div className="persuasion text-container">

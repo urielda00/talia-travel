@@ -21,6 +21,10 @@ export const trip = defineType({
       name: 'hero',
       title: 'פתיח ראשי',
     },
+    {
+      name: 'story',
+      title: 'סיפור המסע',
+    },
   ],
   fields: [
     defineField({
@@ -98,6 +102,139 @@ export const trip = defineType({
       type: 'boolean',
       group: 'hero',
       initialValue: false,
+    }),
+    defineField({
+      name: 'storyEyebrow',
+      title: 'כותרת קטנה',
+      type: 'string',
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין כותרת קטנה'),
+        rule.max(30).error('הכותרת יכולה להכיל עד 30 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyHeadingLineOne',
+      title: 'שורה ראשונה בכותרת',
+      type: 'string',
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את השורה הראשונה בכותרת'),
+        rule.max(30).error('השורה יכולה להכיל עד 30 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyHeadingLineTwo',
+      title: 'שורה שנייה בכותרת',
+      type: 'string',
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את השורה השנייה בכותרת'),
+        rule.max(45).error('השורה יכולה להכיל עד 45 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storySupportingHeading',
+      title: 'כותרת משנה',
+      type: 'string',
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין כותרת משנה'),
+        rule.max(50).error('כותרת המשנה יכולה להכיל עד 50 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyParagraphOne',
+      title: 'פסקה ראשונה',
+      type: 'text',
+      rows: 4,
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה הראשונה'),
+        rule.max(190).error('הפסקה יכולה להכיל עד 190 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyParagraphTwo',
+      title: 'פסקה שנייה',
+      type: 'text',
+      rows: 4,
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה השנייה'),
+        rule.max(200).error('הפסקה יכולה להכיל עד 200 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyParagraphThree',
+      title: 'פסקה שלישית',
+      type: 'text',
+      rows: 4,
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה השלישית'),
+        rule.max(170).error('הפסקה יכולה להכיל עד 170 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyClosingParagraph',
+      title: 'פסקת סיום',
+      type: 'text',
+      rows: 3,
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את פסקת הסיום'),
+        rule.max(130).error('פסקת הסיום יכולה להכיל עד 130 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyWordOne',
+      title: 'מילה ראשונה',
+      description: 'אחת משלוש המילים הקצרות שמופיעות באזור התמונות.',
+      type: 'string',
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את המילה הראשונה'),
+        rule.max(10).error('המילה יכולה להכיל עד 10 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyWordTwo',
+      title: 'מילה שנייה',
+      description: 'אחת משלוש המילים הקצרות שמופיעות באזור התמונות.',
+      type: 'string',
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את המילה השנייה'),
+        rule.max(10).error('המילה יכולה להכיל עד 10 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyWordThree',
+      title: 'מילה שלישית',
+      description: 'אחת משלוש המילים הקצרות שמופיעות באזור התמונות.',
+      type: 'string',
+      group: 'story',
+      validation: (rule) => [
+        rule.required().error('יש להזין את המילה השלישית'),
+        rule.max(10).error('המילה יכולה להכיל עד 10 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'storyMainImage',
+      title: 'תמונה ראשית',
+      description: 'התמונה הגדולה שמופיעה באזור סיפור המסע.',
+      type: 'image',
+      group: 'story',
+      validation: (rule) => rule.required().error('יש לבחור תמונה ראשית'),
+    }),
+    defineField({
+      name: 'storySecondaryImage',
+      title: 'תמונה משנית',
+      description: 'התמונה הקטנה שמופיעה לצד התמונה הראשית באזור סיפור המסע.',
+      type: 'image',
+      group: 'story',
+      validation: (rule) => rule.required().error('יש לבחור תמונה משנית'),
     }),
   ],
   preview: {
