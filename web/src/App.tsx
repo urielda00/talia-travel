@@ -1,6 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import './App.css'
 import PrivacyPolicy from './PrivacyPolicy'
+import { shorts } from './data/shorts'
 import heroVideo from '../../assets/video.mp4'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
@@ -9,6 +10,26 @@ const whatsappBase = `https://wa.me/${phone}`
 const tripName = 'דובאי ואבו דאבי'
 const whatsappMessage = `היי טליה, הגעתי מדף הנחיתה ורציתי לשמוע על הטיול ל${tripName}`
 const whatsappUrl = `${whatsappBase}?text=${encodeURIComponent(whatsappMessage)}`
+
+function getYoutubeVideoId(youtubeUrl: string): string | null {
+  if (!youtubeUrl.trim()) return null
+
+  try {
+    const url = new URL(youtubeUrl)
+    const host = url.hostname.toLowerCase().replace(/^www\./, '')
+    let videoId: string | null = null
+
+    if (host === 'youtu.be') videoId = url.pathname.split('/').filter(Boolean)[0] ?? null
+    if (host === 'youtube.com' || host === 'm.youtube.com') {
+      if (url.pathname.startsWith('/shorts/')) videoId = url.pathname.split('/')[2] ?? null
+      if (url.pathname === '/watch') videoId = url.searchParams.get('v')
+    }
+
+    return videoId && /^[A-Za-z0-9_-]{11}$/.test(videoId) ? videoId : null
+  } catch {
+    return null
+  }
+}
 
 const previousTrips = [
   ['img1', 'טיול ג׳יפים במדבר'], ['img2', 'מסע חורף בלפלנד'], ['img3', 'סיור עירוני על גלגלים'],
@@ -168,9 +189,13 @@ function App() {
         </section>
 
         <section className="community section section--mint">
-          <div className="split-card content-container">
-            <div className="split-card__image"><img src={asset('img7')} alt="קבוצה שמחה בסיום חוויה משותפת" loading="lazy" /></div>
-            <div className="split-card__copy"><h2 className="green-title">מטיילים ביחד,<br />חוזרים עם קהילה</h2><p className="lead">זו לא עוד חופשה רגילה.</p><p>זו קבוצה של אנשים שבוחרים לעצור לרגע, לצאת מהשגרה ולחוות עולם בדרך אחרת. רבים מגיעים בלי להכיר אף אחד — ומגלים מהר מאוד שהחיבור נוצר מעצמו.</p><p>הטיולים שלנו משלבים מקומות מעולים, אוכל טוב, חוויות מיוחדות והמון רגעים של צחוק ושמחה.</p><p>האווירה קלילה, פתוחה ומכילה, והליווי האישי שלי מתחיל עוד לפני שעולים למטוס.</p></div>
+          <div className="community__inner content-container">
+            <div className="community__collage" aria-label="רגעים של קהילה וחוויות משותפות בטיולים">
+              <figure className="community__photo community__photo--main"><img src={asset('img5')} alt="קבוצת מטיילים מחויכת בחוויה משותפת" loading="lazy" /></figure>
+              <figure className="community__photo"><img src={asset('img11')} alt="קבוצת מטיילים לפני פעילות רפטינג" loading="lazy" /></figure>
+              <figure className="community__photo"><img src={asset('img1')} alt="מטיילים יוצאים יחד להרפתקה במדבר" loading="lazy" /></figure>
+            </div>
+            <div className="community__copy"><h2 className="community__title">מטיילים ביחד,<br />חוזרים עם קהילה</h2><p className="lead">זו לא עוד חופשה רגילה.</p><p>זו קבוצה של אנשים שבוחרים לעצור לרגע, לצאת מהשגרה ולחוות עולם בדרך אחרת. רבים מגיעים בלי להכיר אף אחד — ומגלים מהר מאוד שהחיבור נוצר מעצמו.</p><p>הטיולים שלנו משלבים מקומות מעולים, אוכל טוב, חוויות מיוחדות והמון רגעים של צחוק ושמחה.</p><p>האווירה קלילה, פתוחה ומכילה, והליווי האישי שלי מתחיל עוד לפני שעולים למטוס.</p></div>
           </div>
         </section>
 
@@ -181,9 +206,15 @@ function App() {
           </div>
         </section>
 
-        <section className="shorts section section--mint" aria-labelledby="shorts-title">
+        <section className="shorts section" aria-labelledby="shorts-title">
           <div className="content-container"><h2 id="shorts-title" className="green-title">ככה זה נראה באמת</h2><div className="shorts__rail">
-            {[['img3', 'סיור בעיר'], ['img8', 'בר הקרח'], ['img10', 'שקיעה במדבר'], ['img11', 'יום של אקשן']].map(([name, title]) => <article className="short-card" key={name}><div><img src={asset(name)} alt={title} loading="lazy" /><button type="button" aria-label={`הפעלת הסרטון: ${title}`}><span aria-hidden="true">▶</span></button><small>Shorts</small></div><h3>{title}</h3></article>)}
+            {shorts.map((short) => {
+              const videoId = getYoutubeVideoId(short.youtubeUrl)
+
+              return <article className="short-card" key={short.title}><div className="short-card__media">
+                {videoId ? <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${videoId}&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&rel=0&modestbranding=1`} title={`סרטון: ${short.title}`} allow="autoplay; encrypted-media" /> : <img src={short.fallbackImage} alt={short.title} loading="lazy" />}
+              </div></article>
+            })}
           </div></div>
         </section>
 
