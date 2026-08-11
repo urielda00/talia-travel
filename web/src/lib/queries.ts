@@ -36,6 +36,21 @@ export const CONTACT_SOCIAL_SETTINGS_QUERY = defineQuery(/* groq */ `
   }
 `)
 
+export const HERO_TRIP_QUERY = defineQuery(/* groq */ `
+  *[
+    _type == "trip" &&
+    !(_id in path("drafts.**")) &&
+    showOnWebsite == true
+  ]
+  | order(startDate asc, _id asc)[0] {
+    heroEyebrow,
+    destination,
+    heroDescription,
+    startDate,
+    endDate
+  }
+`)
+
 export const LANDING_PAGE_QUERY = defineQuery(/* groq */ `
   {
     "trip": (*[_type == "trip" && active == true]

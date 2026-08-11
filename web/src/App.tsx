@@ -4,7 +4,15 @@ import PrivacyPolicy from './PrivacyPolicy'
 import { shorts } from './data/shorts'
 import { reviewScreenshots } from './data/reviews'
 import { getWhatsAppUrl } from './lib/format'
-import { CONTACT_SOCIAL_SETTINGS_QUERY } from './lib/queries'
+import {
+  FALLBACK_HERO_TRIP,
+  formatHeroDateRange,
+  getHeroDuration,
+  resolveHeroTrip,
+  type HeroTripContent,
+  type HeroTripDocument,
+} from './lib/heroTrip'
+import { CONTACT_SOCIAL_SETTINGS_QUERY, HERO_TRIP_QUERY } from './lib/queries'
 import { sanityClient } from './lib/sanity'
 import {
   FALLBACK_CONTACT_SOCIAL_SETTINGS,
@@ -14,8 +22,10 @@ import {
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
-const tripName = 'דובאי ואבו דאבי'
-const whatsappMessage = `היי טליה, הגעתי מדף הנחיתה ורציתי לשמוע על הטיול ל${tripName}`
+
+function getWhatsappMessage(destination: string): string {
+  return `היי טליה, הגעתי מדף הנחיתה ורציתי לשמוע על הטיול ל${destination}`
+}
 
 function getYoutubeVideoId(youtubeUrl: string): string | null {
   if (!youtubeUrl.trim()) return null
@@ -64,7 +74,7 @@ const faqs = [
   ['מה מדיניות הביטול והתשלום?', 'אפשרויות התשלום ותנאי הביטול נקבעים לכל טיול בנפרד ונמסרים בצורה מסודרת ושקופה לפני ההרשמה.'],
 ]
 
-function LeadForm({ idPrefix, whatsappBase, compact = false }: { idPrefix: string; whatsappBase: string; compact?: boolean }) {
+function LeadForm({ idPrefix, whatsappBase, whatsappMessage, compact = false }: { idPrefix: string; whatsappBase: string; whatsappMessage: string; compact?: boolean }) {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -152,6 +162,7 @@ function ReviewCarousel() {
 function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
   const [siteSettings, setSiteSettings] = useState(FALLBACK_CONTACT_SOCIAL_SETTINGS)
+  const [heroTrip, setHeroTrip] = useState<HeroTripContent>(FALLBACK_HERO_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -164,12 +175,21 @@ function App() {
       })
       .catch(() => undefined)
 
+    sanityClient
+      .fetch<HeroTripDocument | null>(HERO_TRIP_QUERY)
+      .then((trip) => {
+        if (!cancelled) setHeroTrip(resolveHeroTrip(trip))
+      })
+      .catch(() => undefined)
+
     return () => { cancelled = true }
   }, [])
 
   const whatsappBase = getWhatsAppUrl(siteSettings.whatsappNumber)
     ?? getWhatsAppUrl(FALLBACK_CONTACT_SOCIAL_SETTINGS.whatsappNumber)!
+  const whatsappMessage = getWhatsappMessage(heroTrip.destination)
   const whatsappUrl = `${whatsappBase}?text=${encodeURIComponent(whatsappMessage)}`
+  const heroDuration = getHeroDuration(heroTrip.startDate, heroTrip.endDate)
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
 
@@ -183,13 +203,13 @@ function App() {
           <div className="hero__overlay" />
           <div className="hero__panel">
             <img className="hero__logo" src={asset('logo')} alt="Talia Dahan Travel" />
-            <p className="hero__eyebrow">מסע בוטיק ל{tripName}</p>
-            <h1 id="hero-title">איחוד האמירויות</h1>
+            <p className="hero__eyebrow">{heroTrip.heroEyebrow}</p>
+            <h1 id="hero-title">{heroTrip.destination}</h1>
             <p className="hero__headline">חופשה אחרת. <span>צבעונית, מפנקת ומלאה ברגעים שלא שוכחים.</span></p>
-            <p className="hero__subtitle">מסע חווייתי בקבוצה קטנה, בין העיר, המדבר, קולינריה, תרבות ואטרקציות שנבחרו בקפידה.</p>
+            <p className="hero__subtitle">{heroTrip.heroDescription}</p>
             <div className="hero__meta" aria-label="פרטי המסע">
-              <p><strong>12–17 בנובמבר 2026</strong><span>תאריכי המסע</span></p>
-              <p><strong>6 ימים <i aria-hidden="true">|</i> 5 לילות</strong><span>הכול כבר מתוכנן עבורך</span></p>
+              <p><strong>{formatHeroDateRange(heroTrip.startDate, heroTrip.endDate)}</strong><span>תאריכי המסע</span></p>
+              <p><strong>{heroDuration.days} <i aria-hidden="true">|</i> {heroDuration.nights}</strong><span>הכול כבר מתוכנן עבורך</span></p>
             </div>
           </div>
         </section>
@@ -263,7 +283,7 @@ function App() {
             <div className="package__checks">{packageItems.map((item) => <p key={item}><span aria-hidden="true">✓</span>{item}</p>)}</div>
             <div className="package__price"><p>כל החופשה במחיר מיוחד של</p><strong>5,490₪</strong><span>לאדם בחדר זוגי</span><small>ניתן לשלם בהעברה בנקאית או עד 10 תשלומים בכרטיס אשראי</small></div>
             <div className="register-copy" id="register"><strong>רוצה להצטרף?</strong><p>השאירי פרטים ואחזור אלייך תוך 48 שעות עם כל הפרטים:</p></div>
-            <LeadForm idPrefix="main" whatsappBase={whatsappBase} />
+            <LeadForm idPrefix="main" whatsappBase={whatsappBase} whatsappMessage={whatsappMessage} />
             <p className="package__fineprint">המחיר אינו כולל ביטוח נסיעות, הוצאות אישיות וארוחות שלא צוינו. התוכנית עשויה להשתנות בהתאם למזג האוויר ולהנחיות המקומיות.</p>
           </div>
         </section>
@@ -321,7 +341,7 @@ function App() {
         </section>
 
         <section className="final-register section" aria-labelledby="final-register-title">
-          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של 5,490₪ בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" whatsappBase={whatsappBase} compact /></div>
+          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של 5,490₪ בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" whatsappBase={whatsappBase} whatsappMessage={whatsappMessage} compact /></div>
         </section>
       </main>
 
