@@ -3,9 +3,9 @@ import './App.css'
 import PrivacyPolicy from './PrivacyPolicy'
 import { shorts } from './data/shorts'
 import { reviewScreenshots } from './data/reviews'
-import heroVideo from '../../assets/video.mp4'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
+const heroVideo = '/media/video.mp4'
 const phone = '972524398419'
 const whatsappBase = `https://wa.me/${phone}`
 const tripName = 'דובאי ואבו דאבי'
