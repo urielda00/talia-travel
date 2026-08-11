@@ -38,6 +38,10 @@ export const trip = defineType({
       title: 'מה מחכה לנו',
     },
     {
+      name: 'packageAndPrice',
+      title: 'חבילה ומחיר',
+    },
+    {
       name: 'previousTripsGallery',
       title: 'גלריית טיולים קודמים',
     },
@@ -567,6 +571,142 @@ export const trip = defineType({
             ? 'לא ניתן להזין רווחים בלבד'
             : true,
         ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemOne',
+      title: 'סעיף 1',
+      description: 'הסעיף הראשון ברשימת מה כלול בחבילה.',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 1'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemTwo',
+      title: 'סעיף 2',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 2'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemThree',
+      title: 'סעיף 3',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 3'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemFour',
+      title: 'סעיף 4',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 4'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemFive',
+      title: 'סעיף 5',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 5'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemSix',
+      title: 'סעיף 6',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 6'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemSeven',
+      title: 'סעיף 7',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 7'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'packageItemEight',
+      title: 'סעיף 8',
+      type: 'string',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 8'),
+        rule.max(80).error('הסעיף יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'pricePerPerson',
+      title: 'מחיר לאדם',
+      description: 'יש להזין מספר בלבד. לדוגמה: 5490. המחיר הזה ישמש בהמשך בכל מקום שבו מוצג מחיר הטיול באתר.',
+      type: 'number',
+      group: 'packageAndPrice',
+      validation: (rule) => [
+        rule.required().error('יש להזין מחיר לאדם'),
+        rule.positive().error('המחיר חייב להיות מספר חיובי'),
+        rule.integer().error('יש להזין מחיר שלם בלבד'),
+      ],
+    }),
+    defineField({
+      name: 'currency',
+      title: 'מטבע',
+      description: 'יש לבחור את המטבע שבו מוצג מחיר הטיול.',
+      type: 'string',
+      group: 'packageAndPrice',
+      initialValue: 'ILS',
+      options: {
+        list: [
+          {title: 'שקל (₪)', value: 'ILS'},
+          {title: 'דולר ($)', value: 'USD'},
+          {title: 'אירו (€)', value: 'EUR'},
+        ],
+      },
+      validation: (rule) => [
+        rule.required().error('יש לבחור מטבע'),
+        rule.custom((value) => ['ILS', 'USD', 'EUR'].includes(value) ? true : 'יש לבחור מטבע מתוך הרשימה'),
       ],
     }),
     defineField({
