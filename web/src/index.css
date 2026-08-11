@@ -1,8 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Bellefair&family=Frank+Ruhl+Libre:wght@500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  color: #111;
-  background: #e9faef;
+  --color-blue: #173B6D;
+  --color-blue-deep: #102A4D;
+  --color-gold: #C9A15B;
+  --color-gold-light: #E2C48E;
+  --color-cream: #F7F3EA;
+  --color-champagne: #EFE7D8;
+  --color-blue-mist: #EAF1F5;
+  --color-text: #243247;
+  --color-text-muted: #566273;
+  --color-white: #FFFFFF;
+  --color-border: #D3DCE3;
+  color: var(--color-text);
+  background: var(--color-cream);
   font-family: 'Heebo', Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -11,12 +22,12 @@
 
 * { box-sizing: border-box; }
 html { min-width: 20rem; scroll-behavior: smooth; }
-body { min-width: 20rem; min-height: 100vh; margin: 0; background: #e9faef; color: #111; font-size: 1rem; line-height: 1.65; }
+body { min-width: 20rem; min-height: 100vh; margin: 0; background: var(--color-cream); color: var(--color-text); font-size: 1rem; line-height: 1.65; }
 body, button, input { font-family: inherit; }
 img { display: block; max-width: 100%; }
 h1, h2, h3, p { margin-block-start: 0; }
-::selection { background: #d99aa5; color: #111; }
-:focus-visible { outline: 3px solid #e36d7f; outline-offset: 3px; }
+::selection { background: var(--color-gold-light); color: var(--color-blue-deep); }
+:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
