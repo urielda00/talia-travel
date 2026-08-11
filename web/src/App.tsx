@@ -1,7 +1,8 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import './App.css'
 import PrivacyPolicy from './PrivacyPolicy'
 import { shorts } from './data/shorts'
+import { reviewScreenshots } from './data/reviews'
 import heroVideo from '../../assets/video.mp4'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
@@ -91,6 +92,57 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
   return <svg className={`social-icon social-icon--${platform}`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">{paths[platform]}</svg>
 }
 
+function ReviewCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [failedImages, setFailedImages] = useState<string[]>([])
+  const activeReview = reviewScreenshots[activeIndex]
+  const hasImage = activeReview ? !failedImages.includes(activeReview.id) : false
+
+  useEffect(() => {
+    if (isPaused || reviewScreenshots.length < 2) return
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((index) => (index + 1) % reviewScreenshots.length)
+    }, 5600)
+
+    return () => window.clearInterval(timer)
+  }, [isPaused])
+
+  const move = (direction: 1 | -1) => {
+    setActiveIndex((index) => (index + direction + reviewScreenshots.length) % reviewScreenshots.length)
+  }
+
+  return (
+    <div className="reviews-carousel" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
+      <div className="reviews-carousel__frame" aria-live="polite">
+        {activeReview && hasImage ? (
+          <img
+            key={activeReview.id}
+            src={activeReview.src}
+            alt={activeReview.alt}
+            onError={() => setFailedImages((images) => images.includes(activeReview.id) ? images : [...images, activeReview.id])}
+          />
+        ) : (
+          <div className="reviews-carousel__empty">
+            <span aria-hidden="true">✦</span>
+            <p>כאן יופיעו בקרוב צילומי מסך של המלצות מהמטיילות שלנו</p>
+          </div>
+        )}
+      </div>
+      <div className="reviews-carousel__controls">
+        <button type="button" onClick={() => move(-1)} aria-label="המלצה קודמת">‹</button>
+        <div className="reviews-carousel__dots" aria-label="בחירת המלצה">
+          {reviewScreenshots.map((review, index) => (
+            <button key={review.id} type="button" onClick={() => setActiveIndex(index)} aria-label={`הצגת המלצה ${index + 1}`} aria-current={index === activeIndex} />
+          ))}
+        </div>
+        <button type="button" onClick={() => move(1)} aria-label="המלצה הבאה">›</button>
+      </div>
+    </div>
+  )
+}
+
 function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
@@ -107,7 +159,7 @@ function App() {
           </video>
           <div className="hero__overlay" />
           <div className="hero__panel">
-            <img className="hero__logo" src={asset('logo')} alt="טליה Travel" />
+            <img className="hero__logo" src={asset('logo')} alt="Talya Dahan Travel" />
             <p className="hero__eyebrow">מסע בוטיק ל{tripName}</p>
             <h1 id="hero-title">איחוד האמירויות</h1>
             <p className="hero__headline">חופשה אחרת. <span>צבעונית, מפנקת ומלאה ברגעים שלא שוכחים.</span></p>
@@ -201,7 +253,7 @@ function App() {
 
         <section className="about section section--white" aria-labelledby="about-title">
           <div className="split-card split-card--about content-container">
-            <div className="split-card__image"><img src={asset('aboutMe')} alt="טליה Travel ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
+            <div className="split-card__image"><img src={asset('aboutMe')} alt="Talya Dahan Travel ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
             <div className="split-card__copy"><p className="section-eyebrow">מי שמאחורי כל פרט</p><h2 id="about-title" className="green-title">נעים מאוד, אני טליה</h2><p className="about__lead">אני מאמינה שטיול טוב מתחיל הרבה לפני שעולים למטוס.</p><p>אחרי שנים של טיולים והפקות, הדבר שהכי מרגש אותי הוא ליצור מסעות שבהם מרגישים שמישהו באמת חשב על האנשים, על הקצב ועל כל הפרטים הקטנים.</p><p>אני בוחרת בקפידה את המסלול, מקומות האירוח והחוויות, מכינה את הקבוצה לקראת היציאה ונשארת מעורבת לאורך הדרך. חשוב לי שכל אחת ואחד ירגישו בטוחים, רצויים ופנויים פשוט ליהנות.</p><p className="about__signature"><strong>אני מזמינה אותך להצטרף למסע שמתוכנן במקצועיות ומרגיש אישי מהרגע הראשון.</strong></p><a className="primary-button" href="/#package">טליה, אני רוצה להצטרף <span aria-hidden="true">✈</span></a></div>
           </div>
         </section>
@@ -219,11 +271,19 @@ function App() {
         </section>
 
         <section className="testimonials section section--white" aria-labelledby="testimonials-title">
-          <div className="content-container"><h2 id="testimonials-title" className="green-title">מטיילים מספרים</h2><div className="message-board">
-            <article><div className="message-board__top">קבוצת דובאי ✈️</div><p>טליה אהובה, תודה על טיול מושלם. הרגשנו שחשבת על כל פרט — מהמלון ועד העצירה הקטנה לקפה. היה לנו כיף, מצחיק ומרגש בטירוף ❤️</p><span>יעל · 21:42</span></article>
-            <article><div className="message-board__top">מסע ללפלנד ❄️</div><p>חזרתי הביתה עם אנרגיות שלא היו לי הרבה זמן. הקבוצה הייתה נהדרת, המסלול היה מדויק ואת פשוט אלופה. כבר מחכה לטיול הבא!</p><span>מיכל · 18:06</span></article>
-            <article><div className="message-board__top">החברים מגאורגיה 🌿</div><p>לא הכרנו אף אחד לפני ויצאנו עם חברים חדשים. זו הייתה חוויה של פעם בחיים, מלאה בצחוק ובאנשים טובים. תודה על הכול.</p><span>אורית · 09:18</span></article>
-          </div></div>
+          <div className="content-container">
+            <p className="section-eyebrow">מילים שנשארות איתנו</p>
+            <h2 id="testimonials-title" className="testimonials__title">מטיילים מספרים</h2>
+            <div className="testimonials__layout">
+              <div className="testimonials__quotes" aria-label="המלצות מטיילים">
+                <blockquote className="testimonial-card testimonial-card--top"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>טליה אהובה, תודה על טיול מושלם. הרגשנו שחשבת על כל פרט — מהמלון ועד העצירה הקטנה לקפה. היה לנו כיף, מצחיק ומרגש בטירוף ❤️</p><footer><strong>יעל</strong><span>קבוצת דובאי</span></footer></blockquote>
+                <blockquote className="testimonial-card"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>חזרתי הביתה עם אנרגיות שלא היו לי הרבה זמן. הקבוצה הייתה נהדרת, המסלול היה מדויק ואת פשוט אלופה. כבר מחכה לטיול הבא!</p><footer><strong>מיכל</strong><span>מסע ללפלנד</span></footer></blockquote>
+                <blockquote className="testimonial-card"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>לא הכרנו אף אחד לפני ויצאנו עם חברים חדשים. זו הייתה חוויה של פעם בחיים, מלאה בצחוק ובאנשים טובים. תודה על הכול.</p><footer><strong>אורית</strong><span>החברים מגאורגיה</span></footer></blockquote>
+              </div>
+              <div className="testimonials__brand" aria-label="טליה דהן - טיולי בוטיק"><img src={asset('logo')} alt="טליה דהן - טיולי בוטיק" /></div>
+              <ReviewCarousel />
+            </div>
+          </div>
         </section>
 
         <section className="faq section" id="faq" aria-labelledby="faq-title">
@@ -239,15 +299,15 @@ function App() {
 
       <footer className="footer">
         <div className="footer__inner content-container">
-          <a className="footer__brand" href="#main" aria-label="טליה Travel — חזרה לראש העמוד"><img src={asset('logo')} alt="" /><span><strong>טליה Travel</strong></span></a>
+          <a className="footer__brand" href="#main" aria-label="טליה דהן - טיולי בוטיק — חזרה לראש העמוד"><img src={asset('logo')} alt="" /><span><strong>טליה דהן - טיולי בוטיק</strong><small>טיולים וחוויות לדתיים ולמסורתיים</small></span></a>
           <div className="footer__connect"><p>בואי להכיר, לשאול ולהתחיל לתכנן את המסע הבא.</p><a className="footer__whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer"><SocialIcon platform="whatsapp" />דברי איתי בוואטסאפ</a></div>
-          <nav className="footer__social" aria-label="טליה Travel ברשתות החברתיות">
+          <nav className="footer__social" aria-label="Talya Dahan Travel ברשתות החברתיות">
             <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="אינסטגרם"><SocialIcon platform="instagram" /></a>
             <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="פייסבוק"><SocialIcon platform="facebook" /></a>
             <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="וואטסאפ"><SocialIcon platform="whatsapp" /></a>
           </nav>
         </div>
-        <div className="footer__bottom content-container"><nav aria-label="קישורים שימושיים"><a href="#package">פרטי החבילה</a><a href="#faq">שאלות נפוצות</a><a href="/privacy">מדיניות פרטיות</a></nav><p>© 2026 טליה Travel · כל הזכויות שמורות</p></div>
+        <div className="footer__bottom content-container"><nav aria-label="קישורים שימושיים"><a href="#package">פרטי החבילה</a><a href="#faq">שאלות נפוצות</a><a href="/privacy">מדיניות פרטיות</a></nav><p>© 2026 Talya Dahan Travel · כל הזכויות שמורות</p></div>
       </footer>
       <a className="floating-whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="פתיחת שיחה בוואטסאפ">
         <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">

@@ -9,7 +9,7 @@ const policySections = [
   },
   {
     title: 'מטרת איסוף המידע',
-    content: 'המידע משמש כדי לטפל בפנייה, למסור פרטים על הטיול הרלוונטי, לבדוק התאמה ולהעניק שירות בקשר לטיולים ולפעילויות של טליה Travel. לא נעשה במידע שימוש למטרה שאינה קשורה לפנייה ללא הסכמה או בסיס חוקי מתאים.',
+    content: 'המידע משמש כדי לטפל בפנייה, למסור פרטים על הטיול הרלוונטי, לבדוק התאמה ולהעניק שירות בקשר לטיולים ולפעילויות של Talya Dahan Travel. לא נעשה במידע שימוש למטרה שאינה קשורה לפנייה ללא הסכמה או בסיס חוקי מתאים.',
   },
   {
     title: 'יצירת קשר עם המשתמש',
@@ -29,7 +29,7 @@ const policySections = [
   },
   {
     title: 'קישורים ושירותים של צדדים שלישיים',
-    content: 'האתר כולל קישורים לשירותים חיצוניים, ובהם WhatsApp ורשתות חברתיות. מעבר לשירות חיצוני כפוף למדיניות הפרטיות ולתנאי השימוש של אותו שירות, וטליה Travel אינה שולטת באופן שבו הוא אוסף או מעבד מידע.',
+    content: 'האתר כולל קישורים לשירותים חיצוניים, ובהם WhatsApp ורשתות חברתיות. מעבר לשירות חיצוני כפוף למדיניות הפרטיות ולתנאי השימוש של אותו שירות, ו־Talya Dahan Travel אינה שולטת באופן שבו הוא אוסף או מעבד מידע.',
   },
   {
     title: 'זכויות לעיון, תיקון ומחיקה',
@@ -48,7 +48,7 @@ const policySections = [
 function PrivacyPolicy() {
   useEffect(() => {
     const previousTitle = document.title
-    document.title = 'מדיניות פרטיות | Talya Travel'
+    document.title = 'מדיניות פרטיות | Talya Dahan Travel'
     return () => { document.title = previousTitle }
   }, [])
 
@@ -58,9 +58,9 @@ function PrivacyPolicy() {
 
       <header className="privacy-header">
         <div className="privacy-header__inner content-container">
-          <a className="privacy-brand" href="/" aria-label="טליה Travel — חזרה לעמוד הראשי">
+          <a className="privacy-brand" href="/" aria-label="Talya Dahan Travel — חזרה לעמוד הראשי">
             <img src="/assets/logo.jpeg" alt="" />
-            <span><strong>טליה Travel</strong><small>מסעות בוטיק בקבוצה</small></span>
+            <span><strong>Talya Dahan Travel</strong><small>מסעות בוטיק בקבוצה</small></span>
           </a>
           <a className="privacy-back-link" href="/"><span aria-hidden="true">←</span> חזרה לעמוד הטיול</a>
         </div>
@@ -71,7 +71,7 @@ function PrivacyPolicy() {
           <div className="privacy-hero__inner content-container">
             <p className="section-eyebrow">הפרטיות שלך חשובה לנו</p>
             <h1 id="privacy-title">מדיניות פרטיות</h1>
-            <p>מדיניות זו מסבירה איזה מידע נאסף באתר טליה Travel, כיצד אנו משתמשים בו ומהן האפשרויות העומדות לרשותך בנוגע למידע האישי שלך.</p>
+            <p>מדיניות זו מסבירה איזה מידע נאסף באתר Talya Dahan Travel, כיצד אנו משתמשים בו ומהן האפשרויות העומדות לרשותך בנוגע למידע האישי שלך.</p>
             <small>עדכון אחרון: 11 באוגוסט 2026</small>
           </div>
         </section>
@@ -91,7 +91,7 @@ function PrivacyPolicy() {
 
             <section className="privacy-contact" aria-labelledby="privacy-contact-title">
               <h2 id="privacy-contact-title">פרטי יצירת קשר</h2>
-              <p>לשאלות על מדיניות הפרטיות או לבקשה בנוגע למידע האישי שלך, אפשר לפנות לטליה Travel באמצעות WhatsApp או בטלפון.</p>
+              <p>לשאלות על מדיניות הפרטיות או לבקשה בנוגע למידע האישי שלך, אפשר לפנות ל־Talya Dahan Travel באמצעות WhatsApp או בטלפון.</p>
               <a href={whatsappUrl} target="_blank" rel="noreferrer">052-439-8419 · פנייה ב־WhatsApp</a>
             </section>
           </div>
@@ -101,7 +101,7 @@ function PrivacyPolicy() {
       </main>
 
       <footer className="privacy-footer">
-        <div className="content-container"><p>© 2026 טליה Travel · כל הזכויות שמורות</p><a href="/">חזרה לעמוד הראשי</a></div>
+        <div className="content-container"><p>© 2026 Talya Dahan Travel · כל הזכויות שמורות</p><a href="/">חזרה לעמוד הראשי</a></div>
       </footer>
     </div>
   )
