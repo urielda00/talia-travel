@@ -33,6 +33,10 @@ export const trip = defineType({
       name: 'benefits',
       title: 'יתרונות הטיול',
     },
+    {
+      name: 'awaits',
+      title: 'מה מחכה לנו',
+    },
   ],
   fields: [
     defineField({
@@ -432,6 +436,126 @@ export const trip = defineType({
             ),
           ],
         }),
+      ],
+    }),
+    defineField({
+      name: 'awaitsSubtitle',
+      title: 'כותרת משנה',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין כותרת משנה'),
+        rule.max(30).error('כותרת המשנה יכולה להכיל עד 30 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'awaitsItemOne',
+      title: 'סעיף 1',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 1'),
+        rule.max(90).error('הסעיף יכול להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'awaitsItemTwo',
+      title: 'סעיף 2',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 2'),
+        rule.max(90).error('הסעיף יכול להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'awaitsItemThree',
+      title: 'סעיף 3',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 3'),
+        rule.max(90).error('הסעיף יכול להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'awaitsItemFour',
+      title: 'סעיף 4',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 4'),
+        rule.max(90).error('הסעיף יכול להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'awaitsItemFive',
+      title: 'סעיף 5',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 5'),
+        rule.max(90).error('הסעיף יכול להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'awaitsItemSix',
+      title: 'סעיף 6',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 6'),
+        rule.max(90).error('הסעיף יכול להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'awaitsItemSeven',
+      title: 'סעיף 7',
+      type: 'string',
+      group: 'awaits',
+      validation: (rule) => [
+        rule.required().error('יש להזין תוכן לסעיף 7'),
+        rule.max(90).error('הסעיף יכול להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0
+            ? 'לא ניתן להזין רווחים בלבד'
+            : true,
+        ),
       ],
     }),
   ],
