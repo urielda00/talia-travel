@@ -4,7 +4,7 @@ import { sanityEnvironment } from './env'
 
 export const sanityClient = createClient({
   ...sanityEnvironment,
-  useCdn: true,
+  useCdn: false,
 })
 
 const imageBuilder = createImageUrlBuilder(sanityClient)
