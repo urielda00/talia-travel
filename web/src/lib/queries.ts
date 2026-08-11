@@ -68,7 +68,10 @@ export const HERO_TRIP_QUERY = defineQuery(/* groq */ `
     persuasionImageOne { asset },
     persuasionImageTwo { asset },
     persuasionImageThree { asset },
-    persuasionImageFour { asset }
+    persuasionImageFour { asset },
+    benefitCardOne { title, text },
+    benefitCardTwo { title, text },
+    benefitCardThree { title, text }
   }
 `)
 

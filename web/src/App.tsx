@@ -15,6 +15,12 @@ import {
 import { CONTACT_SOCIAL_SETTINGS_QUERY, HERO_TRIP_QUERY } from './lib/queries'
 import { sanityClient, urlForImage } from './lib/sanity'
 import {
+  FALLBACK_BENEFIT_TRIP,
+  resolveBenefitTrip,
+  type BenefitTripContent,
+  type BenefitTripDocument,
+} from './lib/benefitTrip'
+import {
   FALLBACK_PERSUASION_TRIP,
   resolvePersuasionTrip,
   type PersuasionTripContent,
@@ -36,7 +42,7 @@ import {
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -202,6 +208,7 @@ function App() {
   const [heroTrip, setHeroTrip] = useState<HeroTripContent>(FALLBACK_HERO_TRIP)
   const [storyTrip, setStoryTrip] = useState<StoryTripContent>(FALLBACK_STORY_TRIP)
   const [persuasionTrip, setPersuasionTrip] = useState<PersuasionTripContent>(FALLBACK_PERSUASION_TRIP)
+  const [benefitTrip, setBenefitTrip] = useState<BenefitTripContent>(FALLBACK_BENEFIT_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -221,6 +228,7 @@ function App() {
           setHeroTrip(resolveHeroTrip(trip))
           setStoryTrip(resolveStoryTrip(trip))
           setPersuasionTrip(resolvePersuasionTrip(trip))
+          setBenefitTrip(resolveBenefitTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -300,9 +308,9 @@ function App() {
 
         <section className="benefits-section" aria-label="יתרונות הטיול">
           <div className="benefit-cards content-container">
-            <article><span aria-hidden="true">✦</span><h2>אירוח ברמה גבוהה</h2><p>מלונות נבחרים, ארוחות מצוינות וכל פרט קטן שכבר סגרנו עבורך.</p></article>
-            <article><span aria-hidden="true">◎</span><h2>חוויה חברתית</h2><p>קבוצה קטנה, נעימה ומגוונת שאפשר להרגיש בה בבית.</p></article>
-            <article><span aria-hidden="true">◇</span><h2>הכול מתוכנן מראש</h2><p>את רק מגיעה עם מזוודה והתרגשות. אנחנו דואגות לכל השאר.</p></article>
+            <article><span aria-hidden="true">✦</span><h2>{benefitTrip.benefitCardOne.title}</h2><p>{benefitTrip.benefitCardOne.text}</p></article>
+            <article><span aria-hidden="true">◎</span><h2>{benefitTrip.benefitCardTwo.title}</h2><p>{benefitTrip.benefitCardTwo.text}</p></article>
+            <article><span aria-hidden="true">◇</span><h2>{benefitTrip.benefitCardThree.title}</h2><p>{benefitTrip.benefitCardThree.text}</p></article>
           </div>
         </section>
 
