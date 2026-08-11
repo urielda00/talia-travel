@@ -3,14 +3,19 @@ import './App.css'
 import PrivacyPolicy from './PrivacyPolicy'
 import { shorts } from './data/shorts'
 import { reviewScreenshots } from './data/reviews'
+import { getWhatsAppUrl } from './lib/format'
+import { CONTACT_SOCIAL_SETTINGS_QUERY } from './lib/queries'
+import { sanityClient } from './lib/sanity'
+import {
+  FALLBACK_CONTACT_SOCIAL_SETTINGS,
+  withContactSocialFallbacks,
+  type ContactSocialSettings,
+} from './lib/siteSettings'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
-const phone = '972524398419'
-const whatsappBase = `https://wa.me/${phone}`
 const tripName = 'דובאי ואבו דאבי'
 const whatsappMessage = `היי טליה, הגעתי מדף הנחיתה ורציתי לשמוע על הטיול ל${tripName}`
-const whatsappUrl = `${whatsappBase}?text=${encodeURIComponent(whatsappMessage)}`
 
 function getYoutubeVideoId(youtubeUrl: string): string | null {
   if (!youtubeUrl.trim()) return null
@@ -59,7 +64,7 @@ const faqs = [
   ['מה מדיניות הביטול והתשלום?', 'אפשרויות התשלום ותנאי הביטול נקבעים לכל טיול בנפרד ונמסרים בצורה מסודרת ושקופה לפני ההרשמה.'],
 ]
 
-function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: boolean }) {
+function LeadForm({ idPrefix, whatsappBase, compact = false }: { idPrefix: string; whatsappBase: string; compact?: boolean }) {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -146,9 +151,27 @@ function ReviewCarousel() {
 
 function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [siteSettings, setSiteSettings] = useState(FALLBACK_CONTACT_SOCIAL_SETTINGS)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
-  if (isPrivacyPage) return <PrivacyPolicy />
+  useEffect(() => {
+    let cancelled = false
+
+    sanityClient
+      .fetch<Partial<ContactSocialSettings> | null>(CONTACT_SOCIAL_SETTINGS_QUERY)
+      .then((settings) => {
+        if (!cancelled) setSiteSettings(withContactSocialFallbacks(settings))
+      })
+      .catch(() => undefined)
+
+    return () => { cancelled = true }
+  }, [])
+
+  const whatsappBase = getWhatsAppUrl(siteSettings.whatsappNumber)
+    ?? getWhatsAppUrl(FALLBACK_CONTACT_SOCIAL_SETTINGS.whatsappNumber)!
+  const whatsappUrl = `${whatsappBase}?text=${encodeURIComponent(whatsappMessage)}`
+
+  if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
 
   return (
     <div className="landing" dir="rtl">
@@ -240,7 +263,7 @@ function App() {
             <div className="package__checks">{packageItems.map((item) => <p key={item}><span aria-hidden="true">✓</span>{item}</p>)}</div>
             <div className="package__price"><p>כל החופשה במחיר מיוחד של</p><strong>5,490₪</strong><span>לאדם בחדר זוגי</span><small>ניתן לשלם בהעברה בנקאית או עד 10 תשלומים בכרטיס אשראי</small></div>
             <div className="register-copy" id="register"><strong>רוצה להצטרף?</strong><p>השאירי פרטים ואחזור אלייך תוך 48 שעות עם כל הפרטים:</p></div>
-            <LeadForm idPrefix="main" />
+            <LeadForm idPrefix="main" whatsappBase={whatsappBase} />
             <p className="package__fineprint">המחיר אינו כולל ביטוח נסיעות, הוצאות אישיות וארוחות שלא צוינו. התוכנית עשויה להשתנות בהתאם למזג האוויר ולהנחיות המקומיות.</p>
           </div>
         </section>
@@ -298,7 +321,7 @@ function App() {
         </section>
 
         <section className="final-register section" aria-labelledby="final-register-title">
-          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של 5,490₪ בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" compact /></div>
+          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של 5,490₪ בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" whatsappBase={whatsappBase} compact /></div>
         </section>
       </main>
 
@@ -307,8 +330,8 @@ function App() {
           <a className="footer__brand" href="#main" aria-label="טליה דהן - טיולי בוטיק — חזרה לראש העמוד"><img src={asset('logo')} alt="" /><span><strong>טליה דהן - טיולי בוטיק</strong><small>טיולים וחוויות לדתיים ולמסורתיים</small></span></a>
           <div className="footer__connect"><p>בואי להכיר, לשאול ולהתחיל לתכנן את המסע הבא.</p><a className="footer__whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer"><SocialIcon platform="whatsapp" />דברי איתי בוואטסאפ</a></div>
           <nav className="footer__social" aria-label="Talia Dahan Travel ברשתות החברתיות">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="אינסטגרם"><SocialIcon platform="instagram" /></a>
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="פייסבוק"><SocialIcon platform="facebook" /></a>
+            <a href={siteSettings.instagramUrl} target="_blank" rel="noreferrer" aria-label="אינסטגרם"><SocialIcon platform="instagram" /></a>
+            <a href={siteSettings.facebookUrl} target="_blank" rel="noreferrer" aria-label="פייסבוק"><SocialIcon platform="facebook" /></a>
             <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="וואטסאפ"><SocialIcon platform="whatsapp" /></a>
           </nav>
         </div>

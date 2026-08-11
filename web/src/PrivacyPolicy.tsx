@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
 
-const whatsappUrl = 'https://wa.me/972524398419'
-
 const policySections = [
   {
     title: 'איזה מידע נאסף בטפסים',
@@ -45,7 +43,7 @@ const policySections = [
   },
 ]
 
-function PrivacyPolicy() {
+function PrivacyPolicy({ whatsappUrl, whatsappNumber }: { whatsappUrl: string; whatsappNumber: string }) {
   useEffect(() => {
     const previousTitle = document.title
     document.title = 'מדיניות פרטיות | Talia Dahan Travel'
@@ -90,7 +88,7 @@ function PrivacyPolicy() {
             <section className="privacy-contact" aria-labelledby="privacy-contact-title">
               <h2 id="privacy-contact-title">פרטי יצירת קשר</h2>
               <p>לשאלות על מדיניות הפרטיות או לבקשה בנוגע למידע האישי שלך, אפשר לפנות ל־Talia Dahan Travel באמצעות WhatsApp או בטלפון.</p>
-              <a className="privacy-contact__whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="פנייה ב־WhatsApp במספר 052-439-8419">
+              <a className="privacy-contact__whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label={`פנייה ב־WhatsApp במספר ${whatsappNumber}`}>
                 פנייה ב־WhatsApp
               </a>
             </section>

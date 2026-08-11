@@ -28,6 +28,14 @@ const portableTextFields = /* groq */ `
   markDefs[] { ... }
 `
 
+export const CONTACT_SOCIAL_SETTINGS_QUERY = defineQuery(/* groq */ `
+  *[_type == "siteSettings" && _id == "siteSettings"][0] {
+    whatsappNumber,
+    instagramUrl,
+    facebookUrl
+  }
+`)
+
 export const LANDING_PAGE_QUERY = defineQuery(/* groq */ `
   {
     "trip": (*[_type == "trip" && active == true]
