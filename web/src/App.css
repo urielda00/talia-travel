@@ -85,7 +85,7 @@
 .white-panel { position: relative; padding: clamp(2rem, 5vw, 3.65rem) clamp(1.25rem, 5vw, 4rem); border: 1px solid rgb(201 161 91 / 42%); border-radius: var(--radius-panel); background: linear-gradient(145deg, rgb(255 255 255 / 92%), rgb(247 243 234 / 94%)); box-shadow: 0 1rem 2.6rem rgb(16 42 77 / 9%), inset 0 1px 0 rgb(255 255 255 / 85%); text-align: center; }
 .section-brand-mark--awaits { inset: 2rem auto auto 3rem; }
 .awaits .green-title, .package .green-title { color: var(--color-blue-deep); font-family: 'Noto Serif Hebrew', 'Times New Roman', serif; }
-.awaits .green-title { max-width: none; margin-bottom: 1.5rem; font-size: clamp(2rem, 5.7vw, 3.3rem); white-space: nowrap; }
+.awaits .green-title { max-width: none; margin-bottom: 1.5rem; font-size: clamp(2rem, 5.7vw, 3.3rem); }
 .awaits .green-title span { display: block; color: var(--color-gold); font-size: .67em; }
 .awaits__list { display: grid; gap: .15rem; max-width: 48rem; margin: 0 auto 1.7rem; padding: 0; list-style: none; text-align: right; }
 .awaits__list li { display: flex; gap: .8rem; align-items: flex-start; padding: .75rem .2rem; border-bottom: 1px solid rgb(23 59 109 / 10%); color: var(--color-text); font-size: clamp(.9rem, 1.8vw, 1rem); line-height: 1.65; }
@@ -129,6 +129,7 @@
 .register-copy p { margin: 0; font-size: .9rem; }
 .lead-form { max-width: 58rem; margin-inline: auto; }
 .lead-form__fields { display: grid; gap: .6rem; }
+.lead-form__fields > label { min-width: 0; }
 .lead-form label:not(.lead-form__consent) span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .lead-form input:not([type='checkbox']) { width: 100%; height: 2.75rem; padding: .45rem .8rem; border: 1px solid var(--color-border); border-radius: var(--radius-control); background: var(--color-white); color: var(--color-text); transition: border-color 180ms ease, box-shadow 180ms ease; }
 .lead-form input::placeholder { color: var(--color-text-muted); }
@@ -181,9 +182,8 @@
 /* Shorts */
 .shorts { background: linear-gradient(135deg, var(--color-cream), var(--color-champagne)); }
 .shorts .green-title { margin-bottom: 1.7rem; color: var(--color-blue-deep); font-family: 'Noto Serif Hebrew', 'Times New Roman', serif; }
-.shorts__rail { display: grid; grid-auto-columns: 82%; grid-auto-flow: column; gap: .8rem; overflow-x: auto; padding-bottom: .8rem; scroll-snap-type: inline mandatory; scrollbar-width: none; }
-.shorts__rail::-webkit-scrollbar { display: none; }
-.short-card { scroll-snap-align: start; }
+.shorts__rail { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; overflow: visible; padding: 0; }
+.short-card { width: min(90vw, 22.5rem); min-width: 0; margin-inline: auto; }
 .short-card__media { position: relative; overflow: hidden; aspect-ratio: 9 / 16; border: 1px solid rgb(23 59 109 / 12%); border-radius: .75rem; background: var(--color-blue-deep); box-shadow: 0 .7rem 1.7rem rgb(16 42 77 / 10%); }
 .short-card__media img, .short-card__media iframe { display: block; width: 100%; height: 100%; border: 0; object-fit: cover; }
 .short-card__media iframe { pointer-events: none; }
@@ -230,7 +230,7 @@
 .accordion article:has(button[aria-expanded='true']) { border-color: var(--color-gold-light); background: var(--color-white); box-shadow: 0 .6rem 1.6rem rgb(16 42 77 / 7%); }
 .accordion h3 { margin: 0; font-family: inherit; }
 .accordion button { display: flex; width: 100%; min-height: 3.8rem; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; border: 0; background: transparent; color: var(--color-text); cursor: pointer; text-align: right; }
-.accordion button span { font-size: .92rem; font-weight: 650; }
+.accordion button span { min-width: 0; font-size: .92rem; font-weight: 650; }
 .accordion__chevron { width: 1.25rem; height: 1.25rem; flex: 0 0 auto; color: var(--color-gold); fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.25; transition: transform 180ms ease; }
 .accordion button[aria-expanded='true'] .accordion__chevron { transform: rotate(180deg); }
 .accordion article > div p { margin: 0; padding: 0 1rem 1.1rem; color: var(--color-text-muted); font-size: .84rem; line-height: 1.7; }
@@ -283,17 +283,20 @@
 .privacy-hero h1 { margin: 0 0 .7rem; color: var(--color-blue); font-family: 'Frank Ruhl Libre', 'Times New Roman', serif; font-size: clamp(2.7rem, 9vw, 5rem); font-weight: 600; line-height: 1; }
 .privacy-hero p:not(.section-eyebrow) { max-width: 43rem; margin: 0 0 .8rem; color: var(--color-text-muted); font-size: clamp(.98rem, 2vw, 1.12rem); line-height: 1.75; }
 .privacy-hero small { color: var(--color-text-muted); font-size: .74rem; }
-.privacy-content { max-width: 52rem; padding-block: clamp(2.5rem, 6vw, 5rem); }
+.privacy-content { max-width: 52rem; padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(2.75rem, 5vw, 4rem); }
 .privacy-intro { margin-bottom: 1rem; padding: 1.1rem 1.2rem; border-inline-start: 3px solid var(--color-gold); background: var(--color-white); box-shadow: 0 .5rem 1.8rem rgb(16 42 77 / 5%); }
 .privacy-intro p { margin: 0; font-weight: 600; line-height: 1.75; }
 .privacy-sections section { padding-block: 1.55rem; border-bottom: 1px solid var(--color-border); }
 .privacy-sections h2 { margin: 0 0 .45rem; color: var(--color-blue); font-family: inherit; font-size: clamp(1.18rem, 3vw, 1.42rem); font-weight: 750; line-height: 1.35; }
 .privacy-sections p { margin: 0; color: var(--color-text-muted); font-size: .94rem; line-height: 1.85; }
-.privacy-sections .privacy-contact { margin-top: 1.6rem; padding: 1.45rem; border: 0; border-radius: .85rem; background: var(--color-blue); color: var(--color-white); }
-.privacy-contact h2 { color: var(--color-white); }
-.privacy-contact p { color: var(--color-blue-mist); }
-.privacy-contact a { display: inline-flex; margin-top: .8rem; color: var(--color-white); font-weight: 750; text-underline-offset: .2rem; }
-.privacy-main__back { margin-top: 2.2rem; }
+.privacy-sections .privacy-contact { margin-top: 1.8rem; padding: clamp(1.35rem, 3vw, 1.8rem); border: 1px solid rgb(23 59 109 / 14%); border-inline-start: 3px solid var(--color-gold); border-radius: .9rem; background: linear-gradient(135deg, rgb(255 255 255 / 94%), var(--color-cream)); box-shadow: 0 .65rem 1.6rem rgb(16 42 77 / 6%); }
+.privacy-contact h2 { color: var(--color-blue-deep); }
+.privacy-contact p { color: var(--color-text-muted); }
+.privacy-contact__whatsapp { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; max-width: 100%; margin-top: 1rem; padding: .55rem 1rem; border: 1px solid transparent; border-radius: .6rem; background: var(--color-blue); box-shadow: 0 .35rem .9rem rgb(23 59 109 / 14%); color: var(--color-white); font-size: .88rem; font-weight: 750; line-height: 1.35; text-align: center; text-decoration: none; transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+.privacy-contact__whatsapp:hover { border-color: var(--color-gold); background: var(--color-blue-deep); box-shadow: 0 .5rem 1.1rem rgb(16 42 77 / 18%); transform: translateY(-1px); }
+.privacy-contact__whatsapp:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
+.privacy-closing-actions { margin-top: 1.35rem; padding-top: 1.35rem; border-top: 1px solid var(--color-border); }
+.privacy-main__back { min-height: 2.7rem; padding: .55rem 1.05rem; border-radius: .6rem; font-size: .86rem; }
 .privacy-footer { padding-block: 1.3rem; background: var(--color-blue-deep); color: var(--color-blue-mist); }
 .privacy-footer > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .7rem 1.5rem; }
 .privacy-footer p { margin: 0; font-size: .68rem; }
@@ -313,7 +316,6 @@
   .photo-strip { grid-template-columns: repeat(4, 1fr); }
   .photo-strip img { height: 11rem; }
   .lead-form__fields { grid-template-columns: repeat(2, 1fr); }
-  .shorts__rail { grid-auto-columns: 17rem; }
 }
 
 @media (min-width: 48rem) {
@@ -355,6 +357,7 @@
   .split-card--about .split-card__image { min-height: 0; height: 34rem; }
   .split-card--about .split-card__copy { padding: 3rem clamp(2.5rem, 5vw, 4.5rem); }
   .shorts__rail { grid-template-columns: repeat(4, 1fr); grid-auto-flow: initial; gap: 1rem; overflow: visible; }
+  .short-card { width: auto; margin-inline: 0; }
   .testimonials__layout { grid-template-columns: minmax(0, 1.18fr) minmax(8rem, .43fr) minmax(15rem, .82fr); gap: clamp(1.4rem, 3.2vw, 3rem); direction: rtl; }
   .testimonials__quotes { direction: rtl; }
   .testimonial-card { padding: 1.55rem 1.2rem 1.15rem; }
@@ -371,6 +374,11 @@
 @media (max-width: 29rem) {
   .privacy-brand small { display: none; }
   .privacy-back-link { max-width: 8.3rem; text-align: center; }
+}
+
+@media (max-width: 35.99rem) {
+  .story__copy h2 { max-width: none; }
+  .story__copy h2 em { display: block; max-width: 100%; }
 }
 
 @media (min-width: 75rem) {

@@ -92,11 +92,15 @@ function PrivacyPolicy() {
             <section className="privacy-contact" aria-labelledby="privacy-contact-title">
               <h2 id="privacy-contact-title">פרטי יצירת קשר</h2>
               <p>לשאלות על מדיניות הפרטיות או לבקשה בנוגע למידע האישי שלך, אפשר לפנות ל־Talya Dahan Travel באמצעות WhatsApp או בטלפון.</p>
-              <a href={whatsappUrl} target="_blank" rel="noreferrer">052-439-8419 · פנייה ב־WhatsApp</a>
+              <a className="privacy-contact__whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="פנייה ב־WhatsApp במספר 052-439-8419">
+                פנייה ב־WhatsApp
+              </a>
             </section>
-          </div>
 
-          <a className="primary-button privacy-main__back" href="/"><span aria-hidden="true">←</span> חזרה לעמוד הטיול</a>
+            <div className="privacy-closing-actions">
+              <a className="primary-button privacy-main__back" href="/"><span aria-hidden="true">←</span> חזרה לעמוד הטיול</a>
+            </div>
+          </div>
         </div>
       </main>
 
