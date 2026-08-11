@@ -57,12 +57,18 @@ import {
   type PackageTripContent,
   type PackageTripDocument,
 } from './lib/packageTrip'
+import {
+  FALLBACK_COMMUNITY_TRIP,
+  resolveCommunityTrip,
+  type CommunityTripContent,
+  type CommunityTripDocument,
+} from './lib/communityTrip'
 import type { SanityImage } from './types/sanity'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -87,6 +93,17 @@ function getPersuasionImageUrl(image: PersuasionTripContent['persuasionImageOne'
 }
 
 function getPreviousTripsGalleryImageUrl(image: SanityImage | null, fallback: string): string {
+  if (!image?.asset) return fallback
+
+  try {
+    const url = urlForImage(image).auto('format').url()
+    return /^https:\/\//.test(url) ? url : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function getCommunityImageUrl(image: SanityImage | null, fallback: string): string {
   if (!image?.asset) return fallback
 
   try {
@@ -232,6 +249,7 @@ function App() {
   const [awaitsTrip, setAwaitsTrip] = useState<AwaitsTripContent>(FALLBACK_AWAITS_TRIP)
   const [previousTripsGallery, setPreviousTripsGallery] = useState<PreviousTripsGalleryContent>(FALLBACK_PREVIOUS_TRIPS_GALLERY)
   const [packageTrip, setPackageTrip] = useState<PackageTripContent>(FALLBACK_PACKAGE_TRIP)
+  const [communityTrip, setCommunityTrip] = useState<CommunityTripContent>(FALLBACK_COMMUNITY_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -255,6 +273,7 @@ function App() {
           setAwaitsTrip(resolveAwaitsTrip(trip))
           setPreviousTripsGallery(resolvePreviousTripsGallery(trip))
           setPackageTrip(resolvePackageTrip(trip))
+          setCommunityTrip(resolveCommunityTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -279,6 +298,12 @@ function App() {
     [persuasionTrip.persuasionImageFour, 'img11'],
   ] as const
   const previousTripsGalleryImages = previousTrips.map(([name], index) => getPreviousTripsGalleryImageUrl(previousTripsGallery[index], asset(name)))
+  const communityMainFallback = asset('img5')
+  const communitySecondaryOneFallback = asset('img11')
+  const communitySecondaryTwoFallback = asset('img1')
+  const communityMainImage = getCommunityImageUrl(communityTrip.communityMainImage, communityMainFallback)
+  const communitySecondaryImageOne = getCommunityImageUrl(communityTrip.communitySecondaryImageOne, communitySecondaryOneFallback)
+  const communitySecondaryImageTwo = getCommunityImageUrl(communityTrip.communitySecondaryImageTwo, communitySecondaryTwoFallback)
   const tripPrice = formatPackagePrice(packageTrip)
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
@@ -381,11 +406,11 @@ function App() {
         <section className="community section section--mint">
           <div className="community__inner content-container">
             <div className="community__collage" aria-label="רגעים של קהילה וחוויות משותפות בטיולים">
-              <figure className="community__photo community__photo--main"><img src={asset('img5')} alt="קבוצת מטיילים מחויכת בחוויה משותפת" loading="lazy" /></figure>
-              <figure className="community__photo"><img src={asset('img11')} alt="קבוצת מטיילים לפני פעילות רפטינג" loading="lazy" /></figure>
-              <figure className="community__photo"><img src={asset('img1')} alt="מטיילים יוצאים יחד להרפתקה במדבר" loading="lazy" /></figure>
+              <figure className="community__photo community__photo--main"><img src={communityMainImage} alt="קבוצת מטיילים מחויכת בחוויה משותפת" loading="lazy" onError={({ currentTarget }) => { currentTarget.onerror = null; currentTarget.src = communityMainFallback }} /></figure>
+              <figure className="community__photo"><img src={communitySecondaryImageOne} alt="קבוצת מטיילים לפני פעילות רפטינג" loading="lazy" onError={({ currentTarget }) => { currentTarget.onerror = null; currentTarget.src = communitySecondaryOneFallback }} /></figure>
+              <figure className="community__photo"><img src={communitySecondaryImageTwo} alt="מטיילים יוצאים יחד להרפתקה במדבר" loading="lazy" onError={({ currentTarget }) => { currentTarget.onerror = null; currentTarget.src = communitySecondaryTwoFallback }} /></figure>
             </div>
-            <div className="community__copy"><h2 className="community__title">מטיילים ביחד,<br />חוזרים עם קהילה</h2><p className="lead">זו לא עוד חופשה רגילה.</p><p>זו קבוצה של אנשים שבוחרים לעצור לרגע, לצאת מהשגרה ולחוות עולם בדרך אחרת. רבים מגיעים בלי להכיר אף אחד — ומגלים מהר מאוד שהחיבור נוצר מעצמו.</p><p>הטיולים שלנו משלבים מקומות מעולים, אוכל טוב, חוויות מיוחדות והמון רגעים של צחוק ושמחה.</p><p>האווירה קלילה, פתוחה ומכילה, והליווי האישי שלי מתחיל עוד לפני שעולים למטוס.</p></div>
+            <div className="community__copy"><h2 className="community__title">{communityTrip.communityHeadingLineOne}<br />{communityTrip.communityHeadingLineTwo}</h2><p className="lead">{communityTrip.communityOpeningSentence}</p><p>{communityTrip.communityParagraphOne}</p><p>{communityTrip.communityParagraphTwo}</p><p>{communityTrip.communityParagraphThree}</p></div>
           </div>
         </section>
 

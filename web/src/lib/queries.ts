@@ -101,7 +101,16 @@ export const HERO_TRIP_QUERY = defineQuery(/* groq */ `
     previousTripsGalleryImageNine { asset },
     previousTripsGalleryImageTen { asset },
     previousTripsGalleryImageEleven { asset },
-    previousTripsGalleryImageTwelve { asset }
+    previousTripsGalleryImageTwelve { asset },
+    communityHeadingLineOne,
+    communityHeadingLineTwo,
+    communityOpeningSentence,
+    communityParagraphOne,
+    communityParagraphTwo,
+    communityParagraphThree,
+    communityMainImage { asset },
+    communitySecondaryImageOne { asset },
+    communitySecondaryImageTwo { asset }
   }
 `)
 

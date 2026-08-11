@@ -42,6 +42,10 @@ export const trip = defineType({
       title: 'חבילה ומחיר',
     },
     {
+      name: 'community',
+      title: 'קהילת המטיילים',
+    },
+    {
       name: 'previousTripsGallery',
       title: 'גלריית טיולים קודמים',
     },
@@ -708,6 +712,111 @@ export const trip = defineType({
         rule.required().error('יש לבחור מטבע'),
         rule.custom((value) => ['ILS', 'USD', 'EUR'].includes(value) ? true : 'יש לבחור מטבע מתוך הרשימה'),
       ],
+    }),
+    defineField({
+      name: 'communityHeadingLineOne',
+      title: 'שורה ראשונה בכותרת',
+      type: 'string',
+      group: 'community',
+      validation: (rule) => [
+        rule.required().error('יש להזין את השורה הראשונה בכותרת'),
+        rule.max(28).error('השורה יכולה להכיל עד 28 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'communityHeadingLineTwo',
+      title: 'שורה שנייה בכותרת',
+      type: 'string',
+      group: 'community',
+      validation: (rule) => [
+        rule.required().error('יש להזין את השורה השנייה בכותרת'),
+        rule.max(30).error('השורה יכולה להכיל עד 30 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'communityOpeningSentence',
+      title: 'משפט פתיחה',
+      type: 'string',
+      group: 'community',
+      validation: (rule) => [
+        rule.required().error('יש להזין משפט פתיחה'),
+        rule.max(50).error('המשפט יכול להכיל עד 50 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'communityParagraphOne',
+      title: 'פסקה ראשונה',
+      type: 'text',
+      rows: 4,
+      group: 'community',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה הראשונה'),
+        rule.max(200).error('הפסקה יכולה להכיל עד 200 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'communityParagraphTwo',
+      title: 'פסקה שנייה',
+      type: 'text',
+      rows: 3,
+      group: 'community',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה השנייה'),
+        rule.max(150).error('הפסקה יכולה להכיל עד 150 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'communityParagraphThree',
+      title: 'פסקה שלישית',
+      type: 'text',
+      rows: 3,
+      group: 'community',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה השלישית'),
+        rule.max(140).error('הפסקה יכולה להכיל עד 140 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'communityMainImage',
+      title: 'תמונה ראשית',
+      description: 'התמונה הגדולה במרכז קולאז׳ הקהילה.',
+      type: 'image',
+      group: 'community',
+      validation: (rule) => rule.required().error('יש לבחור תמונה ראשית'),
+    }),
+    defineField({
+      name: 'communitySecondaryImageOne',
+      title: 'תמונה משנית 1',
+      description: 'התמונה התומכת הראשונה בקולאז׳ הקהילה.',
+      type: 'image',
+      group: 'community',
+      validation: (rule) => rule.required().error('יש לבחור תמונה משנית 1'),
+    }),
+    defineField({
+      name: 'communitySecondaryImageTwo',
+      title: 'תמונה משנית 2',
+      description: 'התמונה התומכת השנייה בקולאז׳ הקהילה.',
+      type: 'image',
+      group: 'community',
+      validation: (rule) => rule.required().error('יש לבחור תמונה משנית 2'),
     }),
     defineField({
       name: 'previousTripsGalleryImageOne',
