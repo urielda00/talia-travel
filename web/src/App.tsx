@@ -50,12 +50,19 @@ import {
   type PreviousTripsGalleryContent,
   type PreviousTripsGalleryDocument,
 } from './lib/previousTripsGallery'
+import {
+  FALLBACK_PACKAGE_TRIP,
+  formatPackagePrice,
+  resolvePackageTrip,
+  type PackageTripContent,
+  type PackageTripDocument,
+} from './lib/packageTrip'
 import type { SanityImage } from './types/sanity'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -120,17 +127,6 @@ const previousTrips = [
   ['img7', 'חוצות את החוג הארקטי'], ['img8', 'רגעים בבר הקרח'], ['img9', 'לילה בדובאי'],
   ['img10', 'שקיעה במדבר'], ['img11', 'יום רפטינג בגאורגיה'],
   ['img12', 'רגע מטיול של טליה'],
-]
-
-const packageItems = [
-  'טיסות ישירות הלוך וחזור עם כבודה',
-  '5 לילות במלונות 4–5 כוכבים במיקום מרכזי',
-  'ארוחות בוקר עשירות וארוחות ערב נבחרות',
-  'אוטובוס תיירים פרטי וצמוד לאורך הטיול',
-  'סיור דובאי העתיקה ושייט במרינה',
-  'יום מדברי מלא כולל ג׳יפים וארוחת ערב',
-  'כניסות לכל האתרים והאטרקציות בתוכנית',
-  'ליווי אישי של טליה ומדריך מקומי בעברית',
 ]
 
 const faqs = [
@@ -235,6 +231,7 @@ function App() {
   const [benefitTrip, setBenefitTrip] = useState<BenefitTripContent>(FALLBACK_BENEFIT_TRIP)
   const [awaitsTrip, setAwaitsTrip] = useState<AwaitsTripContent>(FALLBACK_AWAITS_TRIP)
   const [previousTripsGallery, setPreviousTripsGallery] = useState<PreviousTripsGalleryContent>(FALLBACK_PREVIOUS_TRIPS_GALLERY)
+  const [packageTrip, setPackageTrip] = useState<PackageTripContent>(FALLBACK_PACKAGE_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -257,6 +254,7 @@ function App() {
           setBenefitTrip(resolveBenefitTrip(trip))
           setAwaitsTrip(resolveAwaitsTrip(trip))
           setPreviousTripsGallery(resolvePreviousTripsGallery(trip))
+          setPackageTrip(resolvePackageTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -281,6 +279,7 @@ function App() {
     [persuasionTrip.persuasionImageFour, 'img11'],
   ] as const
   const previousTripsGalleryImages = previousTrips.map(([name], index) => getPreviousTripsGalleryImageUrl(previousTripsGallery[index], asset(name)))
+  const tripPrice = formatPackagePrice(packageTrip)
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
 
@@ -371,8 +370,8 @@ function App() {
         <section className="package section section--white" id="package">
           <div className="package__inner content-container">
             <h2 className="green-title">מה החבילה כוללת?</h2>
-            <div className="package__checks">{packageItems.map((item) => <p key={item}><span aria-hidden="true">✓</span>{item}</p>)}</div>
-            <div className="package__price"><p>כל החופשה במחיר מיוחד של</p><strong>5,490₪</strong><span>לאדם בחדר זוגי</span><small>ניתן לשלם בהעברה בנקאית או עד 10 תשלומים בכרטיס אשראי</small></div>
+            <div className="package__checks">{packageTrip.items.map((item, index) => <p key={index}><span aria-hidden="true">✓</span>{item}</p>)}</div>
+            <div className="package__price"><p>כל החופשה במחיר מיוחד של</p><strong>{tripPrice}</strong><span>לאדם בחדר זוגי</span><small>ניתן לשלם בהעברה בנקאית או עד 10 תשלומים בכרטיס אשראי</small></div>
             <div className="register-copy" id="register"><strong>רוצה להצטרף?</strong><p>השאירי פרטים ואחזור אלייך תוך 48 שעות עם כל הפרטים:</p></div>
             <LeadForm idPrefix="main" whatsappBase={whatsappBase} whatsappMessage={whatsappMessage} />
             <p className="package__fineprint">המחיר אינו כולל ביטוח נסיעות, הוצאות אישיות וארוחות שלא צוינו. התוכנית עשויה להשתנות בהתאם למזג האוויר ולהנחיות המקומיות.</p>
@@ -432,7 +431,7 @@ function App() {
         </section>
 
         <section className="final-register section" aria-labelledby="final-register-title">
-          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של 5,490₪ בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" whatsappBase={whatsappBase} whatsappMessage={whatsappMessage} compact /></div>
+          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של {tripPrice} בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" whatsappBase={whatsappBase} whatsappMessage={whatsappMessage} compact /></div>
         </section>
       </main>
 
