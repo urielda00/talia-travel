@@ -1,46 +1,131 @@
 # AGENTS.md
 
-## Scope
+## Project
 
-This repository contains the Talya Dahan Travel project.
+This repository contains the Talia Dahan Travel website.
 
 Structure:
 
-- `web/` - React + Vite + TypeScript frontend
+- `web/` - React + Vite + TypeScript production frontend
 - `studio/` - Sanity Studio
 
-For the current design phase:
+The landing page design is finished and approved.
 
-- Work ONLY inside `web/`.
-- Ignore `studio/` completely.
-- Do not inspect or modify Sanity.
-- Do not connect frontend work to Sanity yet.
+---
 
-Sanity integration will be handled later.
+## Most important rule
+
+The current visual design of `web/` is LOCKED.
+
+Sanity is being added only as a content management system.
+
+Content may become dynamic, but the website must continue to look and behave exactly like the current finished implementation.
+
+Do not redesign, restyle, simplify, restructure, or reinterpret the frontend.
+
+Preserve:
+
+- existing DOM/layout structure whenever possible
+- CSS classes
+- spacing
+- typography
+- colors
+- image positions and crops
+- responsive behavior
+- animations
+- section order
+- button appearance
+- form appearance and behavior
+- desktop and mobile composition
+
+A Sanity integration must adapt to the existing design.
+The design must never adapt to Sanity.
 
 ---
 
 ## Working rules
 
-- Read this file before each task.
-- Inspect only files relevant to the requested task.
-- Do not modify unrelated files.
-- Do not continue into adjacent work.
-- Keep changes small and task-focused.
-- Do not deploy unless explicitly requested.
-- After frontend changes, run `npm run build`.
-- Fix only errors caused by the requested change.
+For every task:
 
-Do not recursively inspect:
+1. Read this file first.
+2. Inspect the existing code relevant to the requested task.
+3. Make only the requested change.
+4. Do not continue into adjacent sections or future tasks.
+5. Do not modify unrelated files.
+6. Do not deploy unless explicitly requested.
+7. Preserve existing functionality unless the task explicitly changes it.
+8. Keep each task isolated and complete.
+9. Stop when the requested task is complete.
+
+Do not recursively inspect generated folders:
 
 - `node_modules/`
 - `dist/`
-- `build/`
 - `.sanity/`
-- `.cache/`
-- `coverage/`
 - `.git/`
-- generated or temporary files
+- `coverage/`
+- temporary/generated files
+
+---
+
+## Frontend source of truth
+
+The currently rendered landing page in `web/` is the visual source of truth.
+
+There are older Sanity-aware frontend components and queries in the repository.
+Do not replace the finished landing page with them unless explicitly instructed.
+
+They may be inspected for reusable technical utilities, but they are not authoritative for layout, content structure, or design.
+
+---
+
+## Sanity direction
+
+The existing Sanity installation and project configuration may be preserved.
+
+The old content schemas are not authoritative.
+The content model is being rebuilt according to the finished landing page.
+
+Sanity should control content only.
+
+Do not expose design controls such as:
+
+- colors
+- fonts
+- spacing
+- sizes
+- layout
+- columns
+- CSS classes
+- component selection
+- section order
+
+The client is non-technical.
+
+Studio must therefore be:
+
+- Hebrew-first
+- clear
+- simple
+- descriptive
+- organized by logical website sections
+- free of unnecessary technical fields
+
+Use clear Hebrew field titles and short Hebrew descriptions where useful.
+
+Do not require the client to enter image alt text.
+
+When a section has a fixed number of visual slots, preserve that fixed number unless the task explicitly says otherwise.
+
+---
+
+## Media
+
+Images and short videos may be managed through Sanity when requested.
+
+Replacing media must not change the existing frontend dimensions, aspect ratios, crops, or layout.
+
+Do not move fixed branding assets such as the logo into Sanity unless explicitly requested.
 
 ---
 
@@ -48,221 +133,36 @@ Do not recursively inspect:
 
 Brand name:
 
-`Talya Dahan Travel`
+`Talia Dahan Travel`
 
-Do not use the old name:
-
-`Talya Travel`
-
-Hebrew brand presentation:
+Hebrew presentation:
 
 `טליה דהן - טיולי בוטיק`
 
 Supporting line:
 
 `טיולים וחוויות לדתיים ולמסורתיים`
-
-The website sells premium boutique group trips.
-
-It should feel:
-
-- premium
-- boutique
-- elegant
-- warm
-- personal
-- exciting
-- polished
-- trustworthy
-
-Luxury should NOT mean dark or heavy.
-
-The site should remain bright, airy and inviting.
-
----
-
-## Brand colors
-
-Use the existing brand palette consistently:
-
-- Primary blue: `#173B6D`
-- Deep blue: `#102A4D`
-- Gold: `#C9A15B`
-- Soft gold: `#E2C48E`
-- Ivory: `#F7F3EA`
-- Champagne: `#EFE7D8`
-- Light blue-grey: `#EAF1F5`
-- Main text: `#243247`
-- Secondary text: `#566273`
-- Subtle border: `rgba(23, 59, 109, 0.12)`
-
-Rules:
-
-- Blue is the main brand color.
-- Gold is an accent only.
-- Large backgrounds should usually stay light.
-- Do not reintroduce the old green/pink visual language.
-- WhatsApp may keep its recognizable green.
-
----
-
-## Typography
 
 The site is Hebrew-first and RTL.
 
-Use:
-
-- `Suez One` for major section headings and hero headings
-- `Heebo` for body text, buttons, forms, labels and smaller headings
-
-Do not use the display font for long text.
-
-Headings should feel distinctive and boutique, not formal or corporate.
-
 ---
 
-## Frontend direction
+## Verification
 
-Frontend stack:
+For `web/` changes:
 
-- React
-- Vite
-- TypeScript
-- custom CSS
+- run `npm run build` inside `web/`
+- fix only errors caused by the requested task
 
-Do not:
+For `studio/` changes:
 
-- recreate the project
-- migrate to Next.js
-- add a heavy UI framework
-- add dependencies unless clearly necessary
+- run the relevant Sanity build/check available in `studio/`
+- fix only errors caused by the requested task
 
-Prefer native React, CSS and browser functionality.
+At completion report briefly:
 
-The page is a conversion-focused landing page for ONE specific trip.
+- files changed
+- what changed
+- verification result
 
-Prioritize:
-
-- clear hierarchy
-- strong photography
-- premium visual quality
-- good spacing
-- clear CTAs
-- trust
-- social proof
-- mobile quality
-
-Avoid:
-
-- SaaS/dashboard aesthetics
-- generic React-template appearance
-- excessive cards
-- excessive borders
-- huge empty spaces
-- visually disconnected sections
-- dark luxury styling
-
----
-
-## Responsive
-
-Maintain:
-
-- RTL
-- desktop quality
-- tablet quality
-- mobile quality
-
-Check especially:
-
-- 375px
-- 390px
-- 430px
-- 768px
-- 1024px
-- 1440px+
-
-Requirements:
-
-- no accidental horizontal scrolling
-- readable typography
-- touch-friendly buttons
-- intentional image crops
-- sensible stacking on mobile
-- floating WhatsApp must not cover important UI
-
----
-
-## Accessibility
-
-Preserve reasonable accessibility:
-
-- semantic HTML
-- real buttons and links
-- visible focus states
-- useful alt text
-- sufficient contrast
-- keyboard-accessible controls
-
-Respect `prefers-reduced-motion` when adding motion.
-
----
-
-## Current media rules
-
-Images:
-
-- local images are allowed during design
-- supplied client images are allowed
-- final Sanity integration comes later
-
-Videos:
-
-- YouTube and YouTube Shorts are preferred
-- do not host large videos directly in the repository
-- Shorts should use 9:16 presentation
-- autoplay is acceptable only when muted and explicitly requested
-- always provide a safe fallback when video data is missing
-
----
-
-## Footer
-
-Preferred branding:
-
-`טליה דהן - טיולי בוטיק`
-
-Supporting line:
-
-`טיולים וחוויות לדתיים ולמסורתיים`
-
-Preferred footer direction:
-
-- deep blue `#102A4D`
-- light text
-- subtle gold accents
-- minimal and clean
-
-Keep existing useful links and functionality.
-
----
-
-## Task completion
-
-For every task:
-
-1. Read this file.
-2. Inspect only relevant files.
-3. Make only the requested change.
-4. Preserve unrelated functionality.
-5. Run relevant checks.
-6. For frontend work, run `npm run build`.
-7. Report briefly:
-   - files changed
-   - what changed
-   - build/check result
-8. Stop.
-
-For visual tasks, do not stop at "it works".
-
-The result should also look intentional, polished and consistent with the Talya Dahan Travel brand.
+Then stop.

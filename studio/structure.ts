@@ -8,11 +8,7 @@ export const structure: StructureResolver = (S) =>
     .id('content')
     .title('תוכן האתר')
     .items([
-      S.listItem()
-        .id('trips')
-        .title('טיולים')
-        .child(S.documentTypeList('trip').id('tripDocuments').title('טיולים')),
-      S.divider(),
+      S.documentTypeListItem('trip').id('trips').title('טיולים'),
       S.listItem()
         .id('siteSettings')
         .title('הגדרות האתר')
