@@ -57,6 +57,10 @@ export const trip = defineType({
       name: 'videos',
       title: 'סרטונים',
     },
+    {
+      name: 'testimonials',
+      title: 'המלצות מטיילים',
+    },
   ],
   fieldsets: [
     {
@@ -68,6 +72,14 @@ export const trip = defineType({
     {name: 'shortVideoTwo', title: 'סרטון 2', options: {collapsible: true}},
     {name: 'shortVideoThree', title: 'סרטון 3', options: {collapsible: true}},
     {name: 'shortVideoFour', title: 'סרטון 4', options: {collapsible: true}},
+    {name: 'testimonialOne', title: 'המלצה 1', options: {collapsible: true}},
+    {name: 'testimonialTwo', title: 'המלצה 2', options: {collapsible: true}},
+    {name: 'testimonialThree', title: 'המלצה 3', options: {collapsible: true}},
+    {
+      name: 'reviewScreenshots',
+      title: 'צילומי המלצות',
+      description: 'ארבעת צילומי המסך שמתחלפים בקרוסלת ההמלצות באתר.',
+    },
   ],
   fields: [
     defineField({
@@ -918,6 +930,167 @@ export const trip = defineType({
       type: 'image',
       group: 'aboutTalia',
       validation: (rule) => rule.required().error('יש לבחור תמונה של טליה'),
+    }),
+    defineField({
+      name: 'testimonialOneQuote',
+      title: 'ציטוט',
+      type: 'text',
+      rows: 4,
+      group: 'testimonials',
+      fieldset: 'testimonialOne',
+      validation: (rule) => [
+        rule.required().error('יש להזין ציטוט'),
+        rule.max(180).error('הציטוט יכול להכיל עד 180 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialOneName',
+      title: 'שם',
+      type: 'string',
+      group: 'testimonials',
+      fieldset: 'testimonialOne',
+      validation: (rule) => [
+        rule.required().error('יש להזין שם'),
+        rule.max(40).error('השם יכול להכיל עד 40 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialOneContext',
+      title: 'תיאור קצר',
+      type: 'string',
+      group: 'testimonials',
+      fieldset: 'testimonialOne',
+      validation: (rule) => [
+        rule.required().error('יש להזין תיאור קצר'),
+        rule.max(50).error('התיאור הקצר יכול להכיל עד 50 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialTwoQuote',
+      title: 'ציטוט',
+      type: 'text',
+      rows: 4,
+      group: 'testimonials',
+      fieldset: 'testimonialTwo',
+      validation: (rule) => [
+        rule.required().error('יש להזין ציטוט'),
+        rule.max(180).error('הציטוט יכול להכיל עד 180 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialTwoName',
+      title: 'שם',
+      type: 'string',
+      group: 'testimonials',
+      fieldset: 'testimonialTwo',
+      validation: (rule) => [
+        rule.required().error('יש להזין שם'),
+        rule.max(40).error('השם יכול להכיל עד 40 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialTwoContext',
+      title: 'תיאור קצר',
+      type: 'string',
+      group: 'testimonials',
+      fieldset: 'testimonialTwo',
+      validation: (rule) => [
+        rule.required().error('יש להזין תיאור קצר'),
+        rule.max(50).error('התיאור הקצר יכול להכיל עד 50 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialThreeQuote',
+      title: 'ציטוט',
+      type: 'text',
+      rows: 4,
+      group: 'testimonials',
+      fieldset: 'testimonialThree',
+      validation: (rule) => [
+        rule.required().error('יש להזין ציטוט'),
+        rule.max(180).error('הציטוט יכול להכיל עד 180 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialThreeName',
+      title: 'שם',
+      type: 'string',
+      group: 'testimonials',
+      fieldset: 'testimonialThree',
+      validation: (rule) => [
+        rule.required().error('יש להזין שם'),
+        rule.max(40).error('השם יכול להכיל עד 40 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'testimonialThreeContext',
+      title: 'תיאור קצר',
+      type: 'string',
+      group: 'testimonials',
+      fieldset: 'testimonialThree',
+      validation: (rule) => [
+        rule.required().error('יש להזין תיאור קצר'),
+        rule.max(50).error('התיאור הקצר יכול להכיל עד 50 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'reviewScreenshotOne',
+      title: 'צילום המלצה 1',
+      type: 'image',
+      group: 'testimonials',
+      fieldset: 'reviewScreenshots',
+      validation: (rule) => rule.required().error('יש לבחור צילום המלצה 1'),
+    }),
+    defineField({
+      name: 'reviewScreenshotTwo',
+      title: 'צילום המלצה 2',
+      type: 'image',
+      group: 'testimonials',
+      fieldset: 'reviewScreenshots',
+      validation: (rule) => rule.required().error('יש לבחור צילום המלצה 2'),
+    }),
+    defineField({
+      name: 'reviewScreenshotThree',
+      title: 'צילום המלצה 3',
+      type: 'image',
+      group: 'testimonials',
+      fieldset: 'reviewScreenshots',
+      validation: (rule) => rule.required().error('יש לבחור צילום המלצה 3'),
+    }),
+    defineField({
+      name: 'reviewScreenshotFour',
+      title: 'צילום המלצה 4',
+      type: 'image',
+      group: 'testimonials',
+      fieldset: 'reviewScreenshots',
+      validation: (rule) => rule.required().error('יש לבחור צילום המלצה 4'),
     }),
     defineField({
       name: 'previousTripsGalleryImageOne',

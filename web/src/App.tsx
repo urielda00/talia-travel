@@ -74,12 +74,18 @@ import {
   type VideoTripContent,
   type VideoTripDocument,
 } from './lib/videoTrip'
+import {
+  FALLBACK_TESTIMONIALS_TRIP,
+  resolveTestimonialsTrip,
+  type TestimonialsTripContent,
+  type TestimonialsTripDocument,
+} from './lib/testimonialsTrip'
 import type { SanityImage } from './types/sanity'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument & AboutTripDocument & VideoTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument & AboutTripDocument & VideoTripDocument & TestimonialsTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -126,6 +132,17 @@ function getCommunityImageUrl(image: SanityImage | null, fallback: string): stri
 }
 
 function getAboutImageUrl(image: SanityImage | null, fallback: string): string {
+  if (!image?.asset) return fallback
+
+  try {
+    const url = urlForImage(image).auto('format').url()
+    return /^https:\/\//.test(url) ? url : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function getReviewScreenshotUrl(image: SanityImage | null, fallback: string): string {
   if (!image?.asset) return fallback
 
   try {
@@ -239,25 +256,27 @@ function ShortVideoCard({ slot, index }: { slot: ShortVideoSlot; index: number }
   </div></article>
 }
 
-function ReviewCarousel() {
+type ReviewCarouselItem = (typeof reviewScreenshots)[number] & { fallbackSrc: string }
+
+function ReviewCarousel({ reviews }: { reviews: ReviewCarouselItem[] }) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [failedImages, setFailedImages] = useState<string[]>([])
-  const activeReview = reviewScreenshots[activeIndex]
+  const activeReview = reviews[activeIndex]
   const hasImage = activeReview ? !failedImages.includes(activeReview.id) : false
 
   useEffect(() => {
-    if (isPaused || reviewScreenshots.length < 2) return
+    if (isPaused || reviews.length < 2) return
 
     const timer = window.setInterval(() => {
-      setActiveIndex((index) => (index + 1) % reviewScreenshots.length)
+      setActiveIndex((index) => (index + 1) % reviews.length)
     }, 5600)
 
     return () => window.clearInterval(timer)
-  }, [isPaused])
+  }, [isPaused, reviews.length])
 
   const move = (direction: 1 | -1) => {
-    setActiveIndex((index) => (index + direction + reviewScreenshots.length) % reviewScreenshots.length)
+    setActiveIndex((index) => (index + direction + reviews.length) % reviews.length)
   }
 
   return (
@@ -268,7 +287,13 @@ function ReviewCarousel() {
             key={activeReview.id}
             src={activeReview.src}
             alt={activeReview.alt}
-            onError={() => setFailedImages((images) => images.includes(activeReview.id) ? images : [...images, activeReview.id])}
+            onError={({ currentTarget }) => {
+              if (currentTarget.src !== new URL(activeReview.fallbackSrc, window.location.href).href) {
+                currentTarget.src = activeReview.fallbackSrc
+                return
+              }
+              setFailedImages((images) => images.includes(activeReview.id) ? images : [...images, activeReview.id])
+            }}
           />
         ) : (
           <div className="reviews-carousel__empty">
@@ -280,7 +305,7 @@ function ReviewCarousel() {
       <div className="reviews-carousel__controls">
         <button type="button" onClick={() => move(-1)} aria-label="המלצה קודמת">‹</button>
         <div className="reviews-carousel__dots" aria-label="בחירת המלצה">
-          {reviewScreenshots.map((review, index) => (
+          {reviews.map((review, index) => (
             <button key={review.id} type="button" onClick={() => setActiveIndex(index)} aria-label={`הצגת המלצה ${index + 1}`} aria-current={index === activeIndex} />
           ))}
         </div>
@@ -303,6 +328,7 @@ function App() {
   const [communityTrip, setCommunityTrip] = useState<CommunityTripContent>(FALLBACK_COMMUNITY_TRIP)
   const [aboutTrip, setAboutTrip] = useState<AboutTripContent>(FALLBACK_ABOUT_TRIP)
   const [videoTrip, setVideoTrip] = useState<VideoTripContent>(() => resolveVideoTrip(null))
+  const [testimonialsTrip, setTestimonialsTrip] = useState<TestimonialsTripContent>(FALLBACK_TESTIMONIALS_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -329,6 +355,7 @@ function App() {
           setCommunityTrip(resolveCommunityTrip(trip))
           setAboutTrip(resolveAboutTrip(trip))
           setVideoTrip(resolveVideoTrip(trip))
+          setTestimonialsTrip(resolveTestimonialsTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -361,6 +388,11 @@ function App() {
   const communitySecondaryImageTwo = getCommunityImageUrl(communityTrip.communitySecondaryImageTwo, communitySecondaryTwoFallback)
   const aboutPortraitFallback = asset('aboutMe')
   const aboutPortraitImage = getAboutImageUrl(aboutTrip.aboutPortraitImage, aboutPortraitFallback)
+  const reviewImages = reviewScreenshots.map((review, index) => ({
+    ...review,
+    src: getReviewScreenshotUrl(testimonialsTrip.screenshots[index], review.src),
+    fallbackSrc: review.src,
+  }))
   const tripPrice = formatPackagePrice(packageTrip)
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
@@ -490,12 +522,12 @@ function App() {
             <h2 id="testimonials-title" className="testimonials__title">מטיילים מספרים</h2>
             <div className="testimonials__layout">
               <div className="testimonials__quotes" aria-label="המלצות מטיילים">
-                <blockquote className="testimonial-card testimonial-card--top"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>טליה אהובה, תודה על טיול מושלם. הרגשנו שחשבת על כל פרט — מהמלון ועד העצירה הקטנה לקפה. היה לנו כיף, מצחיק ומרגש בטירוף ❤️</p><footer><strong>יעל</strong><span>קבוצת דובאי</span></footer></blockquote>
-                <blockquote className="testimonial-card"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>חזרתי הביתה עם אנרגיות שלא היו לי הרבה זמן. הקבוצה הייתה נהדרת, המסלול היה מדויק ואת פשוט אלופה. כבר מחכה לטיול הבא!</p><footer><strong>מיכל</strong><span>מסע ללפלנד</span></footer></blockquote>
-                <blockquote className="testimonial-card"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>לא הכרנו אף אחד לפני ויצאנו עם חברים חדשים. זו הייתה חוויה של פעם בחיים, מלאה בצחוק ובאנשים טובים. תודה על הכול.</p><footer><strong>אורית</strong><span>החברים מגאורגיה</span></footer></blockquote>
+                <blockquote className="testimonial-card testimonial-card--top"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>{testimonialsTrip.written[0].quote}</p><footer><strong>{testimonialsTrip.written[0].name}</strong><span>{testimonialsTrip.written[0].context}</span></footer></blockquote>
+                <blockquote className="testimonial-card"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>{testimonialsTrip.written[1].quote}</p><footer><strong>{testimonialsTrip.written[1].name}</strong><span>{testimonialsTrip.written[1].context}</span></footer></blockquote>
+                <blockquote className="testimonial-card"><span className="testimonial-card__mark" aria-hidden="true">״</span><p>{testimonialsTrip.written[2].quote}</p><footer><strong>{testimonialsTrip.written[2].name}</strong><span>{testimonialsTrip.written[2].context}</span></footer></blockquote>
               </div>
               <div className="testimonials__brand" aria-label="טליה דהן - טיולי בוטיק"><img src={asset('logo')} alt="טליה דהן - טיולי בוטיק" /></div>
-              <ReviewCarousel />
+              <ReviewCarousel reviews={reviewImages} />
             </div>
           </div>
         </section>

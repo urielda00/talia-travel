@@ -125,7 +125,20 @@ export const HERO_TRIP_QUERY = defineQuery(/* groq */ `
     aboutParagraphOne,
     aboutParagraphTwo,
     aboutClosingParagraph,
-    aboutPortraitImage { asset }
+    aboutPortraitImage { asset },
+    testimonialOneQuote,
+    testimonialOneName,
+    testimonialOneContext,
+    testimonialTwoQuote,
+    testimonialTwoName,
+    testimonialTwoContext,
+    testimonialThreeQuote,
+    testimonialThreeName,
+    testimonialThreeContext,
+    reviewScreenshotOne { asset },
+    reviewScreenshotTwo { asset },
+    reviewScreenshotThree { asset },
+    reviewScreenshotFour { asset }
   }
 `)
 
