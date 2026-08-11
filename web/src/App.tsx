@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import './App.css'
 import PrivacyPolicy from './PrivacyPolicy'
 import { reviewScreenshots } from './data/reviews'
@@ -208,11 +208,105 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
 function ShortVideoCard({ slot, index }: { slot: ShortVideoSlot; index: number }) {
   const [videoFailed, setVideoFailed] = useState(false)
   const [sanityFallbackFailed, setSanityFallbackFailed] = useState(false)
+  const [attachedVideoUrl, setAttachedVideoUrl] = useState<string | null>(null)
+  const cardRef = useRef<HTMLElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const shouldPlayRef = useRef(false)
+  const playPromiseRef = useRef<Promise<void> | null>(null)
+  const retryAfterPlayRef = useRef(false)
 
   useEffect(() => {
     setVideoFailed(false)
+    setAttachedVideoUrl((currentUrl) => currentUrl === slot.videoUrl ? currentUrl : null)
+  }, [slot.videoUrl])
+
+  useEffect(() => {
     setSanityFallbackFailed(false)
-  }, [slot.videoUrl, slot.fallbackImage])
+  }, [slot.fallbackImage])
+
+  const playIfVisible = useCallback((video: HTMLVideoElement) => {
+    if (!shouldPlayRef.current || document.hidden || !video.getAttribute('src') || !video.paused) return
+    if (playPromiseRef.current) {
+      retryAfterPlayRef.current = true
+      return
+    }
+
+    const playPromise = video.play()
+    playPromiseRef.current = playPromise
+    void playPromise.catch(() => undefined).finally(() => {
+      if (playPromiseRef.current !== playPromise) return
+
+      playPromiseRef.current = null
+      if (retryAfterPlayRef.current) {
+        retryAfterPlayRef.current = false
+        playIfVisible(video)
+      }
+    })
+  }, [])
+
+  const syncPlayback = useCallback(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (!shouldPlayRef.current || document.hidden) {
+      retryAfterPlayRef.current = false
+      video.pause()
+      return
+    }
+
+    playIfVisible(video)
+  }, [playIfVisible])
+
+  useEffect(() => {
+    const card = cardRef.current
+    if (!card || !slot.videoUrl) return
+
+    let activationTimer: number | null = null
+    const preloadDistance = Math.round(window.innerHeight * 1.5)
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return
+
+      observer.disconnect()
+      activationTimer = window.setTimeout(() => {
+        setAttachedVideoUrl(slot.videoUrl)
+        activationTimer = null
+      }, index * 250)
+    }, { rootMargin: `${preloadDistance}px 0px`, threshold: 0.01 })
+
+    observer.observe(card)
+
+    return () => {
+      observer.disconnect()
+      if (activationTimer !== null) window.clearTimeout(activationTimer)
+    }
+  }, [index, slot.videoUrl])
+
+  useEffect(() => {
+    const card = cardRef.current
+    if (!card) return
+
+    const observer = new IntersectionObserver(([entry]) => {
+      shouldPlayRef.current = Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.4)
+      syncPlayback()
+    }, { threshold: [0, 0.4] })
+    const handleVisibilityChange = () => syncPlayback()
+
+    observer.observe(card)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      shouldPlayRef.current = false
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      card.querySelector('video')?.pause()
+    }
+  }, [syncPlayback])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (video && attachedVideoUrl) video.load()
+    syncPlayback()
+  }, [attachedVideoUrl, syncPlayback])
 
   let sanityFallbackUrl: string | null = null
   if (slot.fallbackImage?.asset) {
@@ -228,19 +322,20 @@ function ShortVideoCard({ slot, index }: { slot: ShortVideoSlot; index: number }
     ? sanityFallbackUrl
     : slot.localFallbackImage
 
-  return <article className="short-card"><div className="short-card__media">
+  return <article ref={cardRef} className="short-card"><div className="short-card__media">
     {slot.videoUrl && !videoFailed ? (
       <video
-        src={slot.videoUrl}
+        ref={videoRef}
+        src={attachedVideoUrl ?? undefined}
         poster={fallbackImageUrl}
-        autoPlay
+        preload="metadata"
         muted
         loop
         playsInline
         aria-label={`סרטון מהטיול ${index + 1}`}
         onError={() => setVideoFailed(true)}
         onCanPlay={({ currentTarget }) => {
-          void currentTarget.play().catch(() => setVideoFailed(true))
+          playIfVisible(currentTarget)
         }}
       />
     ) : (
