@@ -172,22 +172,44 @@ const previousTrips = [
 ]
 
 function LeadForm({ idPrefix, whatsappBase, whatsappMessage, compact = false }: { idPrefix: string; whatsappBase: string; whatsappMessage: string; compact?: boolean }) {
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const formName = idPrefix === 'main' ? 'talia-trip-registration-main' : 'talia-trip-registration-final'
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     const message = `${whatsappMessage}\nשם: ${data.get('name')} ${data.get('lastName')}\nטלפון: ${data.get('phone')}\nאימייל: ${data.get('email')}`
-    window.open(`${whatsappBase}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams([...data.entries()].map(([key, value]) => [key, String(value)])).toString(),
+      })
+    } finally {
+      window.open(`${whatsappBase}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+    }
   }
 
   return (
-    <form className={`lead-form${compact ? ' lead-form--compact' : ''}`} onSubmit={submit}>
+    <form
+      className={`lead-form${compact ? ' lead-form--compact' : ''}`}
+      name={formName}
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      onSubmit={submit}
+    >
+      <input type="hidden" name="form-name" value={formName} />
+      <p
+        aria-hidden="true"
+        style={{ position: 'absolute', overflow: 'hidden', clip: 'rect(0 0 0 0)', height: 1, width: 1, margin: -1, padding: 0, border: 0 }}
+      ><label>לא למלא אם את אנושית <input name="bot-field" tabIndex={-1} autoComplete="off" /></label></p>
       <div className="lead-form__fields">
         <label htmlFor={`${idPrefix}-name`}><span>שם פרטי</span><input id={`${idPrefix}-name`} name="name" placeholder="שם פרטי" autoComplete="given-name" required /></label>
         <label htmlFor={`${idPrefix}-last`}><span>שם משפחה</span><input id={`${idPrefix}-last`} name="lastName" placeholder="שם משפחה" autoComplete="family-name" required /></label>
         <label htmlFor={`${idPrefix}-email`}><span>אימייל</span><input id={`${idPrefix}-email`} name="email" placeholder="אימייל" type="email" autoComplete="email" required /></label>
         <label htmlFor={`${idPrefix}-phone`}><span>מספר טלפון</span><input id={`${idPrefix}-phone`} name="phone" placeholder="מספר טלפון" type="tel" inputMode="tel" autoComplete="tel" required /></label>
       </div>
-      <label className="lead-form__consent"><input type="checkbox" required /> <span>קראתי את <a href="/privacy">מדיניות הפרטיות</a> ואני מסכימה לשמירת הפרטים לצורך יצירת קשר</span></label>
+      <label className="lead-form__consent"><input type="checkbox" name="privacyConsent" value="accepted" required /> <span>קראתי את <a href="/privacy">מדיניות הפרטיות</a> ואני מסכימה לשמירת הפרטים לצורך יצירת קשר</span></label>
       <button type="submit">חזרי אליי עם הפרטים <span aria-hidden="true">✈</span></button>
     </form>
   )
