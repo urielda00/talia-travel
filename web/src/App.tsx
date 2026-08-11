@@ -15,6 +15,12 @@ import {
 import { CONTACT_SOCIAL_SETTINGS_QUERY, HERO_TRIP_QUERY } from './lib/queries'
 import { sanityClient, urlForImage } from './lib/sanity'
 import {
+  FALLBACK_PERSUASION_TRIP,
+  resolvePersuasionTrip,
+  type PersuasionTripContent,
+  type PersuasionTripDocument,
+} from './lib/persuasionTrip'
+import {
   FALLBACK_CONTACT_SOCIAL_SETTINGS,
   withContactSocialFallbacks,
   type ContactSocialSettings,
@@ -30,9 +36,20 @@ import {
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
+  if (!image?.asset) return fallback
+
+  try {
+    const url = urlForImage(image).auto('format').url()
+    return /^https:\/\//.test(url) ? url : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function getPersuasionImageUrl(image: PersuasionTripContent['persuasionImageOne'], fallback: string): string {
   if (!image?.asset) return fallback
 
   try {
@@ -184,6 +201,7 @@ function App() {
   const [siteSettings, setSiteSettings] = useState(FALLBACK_CONTACT_SOCIAL_SETTINGS)
   const [heroTrip, setHeroTrip] = useState<HeroTripContent>(FALLBACK_HERO_TRIP)
   const [storyTrip, setStoryTrip] = useState<StoryTripContent>(FALLBACK_STORY_TRIP)
+  const [persuasionTrip, setPersuasionTrip] = useState<PersuasionTripContent>(FALLBACK_PERSUASION_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -202,6 +220,7 @@ function App() {
         if (!cancelled) {
           setHeroTrip(resolveHeroTrip(trip))
           setStoryTrip(resolveStoryTrip(trip))
+          setPersuasionTrip(resolvePersuasionTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -219,6 +238,12 @@ function App() {
   const storySecondaryFallback = asset('img10')
   const storyMainImage = getStoryImageUrl(storyTrip.storyMainImage, storyMainFallback)
   const storySecondaryImage = getStoryImageUrl(storyTrip.storySecondaryImage, storySecondaryFallback)
+  const persuasionImages = [
+    [persuasionTrip.persuasionImageOne, 'img1'],
+    [persuasionTrip.persuasionImageTwo, 'img6'],
+    [persuasionTrip.persuasionImageThree, 'img9'],
+    [persuasionTrip.persuasionImageFour, 'img11'],
+  ] as const
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
 
@@ -262,14 +287,14 @@ function App() {
             </div>
           </div>
           <div className="persuasion text-container">
-            <p>כבר הרבה זמן שאת חושבת על חופשה שמאפשרת לך להתנתק מהשגרה, לראות עולם ולהרגיש שמטפלים בך?</p>
-            <p><strong>פשוט לקחת רגע ולעשות משהו בשבילך.</strong></p>
-            <p>זה הזמן. אני מזמינה אותך להצטרף לקבוצה קטנה ואיכותית, לפגוש נשים חדשות ולחזור עם הרבה יותר מתמונות.</p>
+            <p>{persuasionTrip.persuasionQuestion}</p>
+            <p><strong>{persuasionTrip.persuasionEmphasis}</strong></p>
+            <p>{persuasionTrip.persuasionInvitation}</p>
             <a className="primary-button" href="/#package">כן, אני רוצה לשמוע עוד <span aria-hidden="true">✈</span></a>
-            <small>מספר המקומות מוגבל כדי לשמור על חוויה אישית ונעימה</small>
+            <small>{persuasionTrip.persuasionNote}</small>
           </div>
           <div className="photo-strip content-container" aria-label="טעימה מהמסעות של טליה">
-            {['img1', 'img6', 'img9', 'img11'].map((name) => <img key={name} src={asset(name)} alt="רגע מטיול של טליה" loading="lazy" />)}
+            {persuasionImages.map(([image, name]) => <img key={name} src={getPersuasionImageUrl(image, asset(name))} alt="רגע מטיול של טליה" loading="lazy" onError={({ currentTarget }) => { currentTarget.onerror = null; currentTarget.src = asset(name) }} />)}
           </div>
         </section>
 

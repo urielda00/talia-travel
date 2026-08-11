@@ -25,6 +25,10 @@ export const trip = defineType({
       name: 'story',
       title: 'סיפור המסע',
     },
+    {
+      name: 'persuasion',
+      title: 'הזמנה להצטרף',
+    },
   ],
   fields: [
     defineField({
@@ -235,6 +239,79 @@ export const trip = defineType({
       type: 'image',
       group: 'story',
       validation: (rule) => rule.required().error('יש לבחור תמונה משנית'),
+    }),
+    defineField({
+      name: 'persuasionQuestion',
+      title: 'כותרת ראשית',
+      description: 'השאלה שמופיעה בתחילת אזור ההזמנה.',
+      type: 'text',
+      rows: 3,
+      group: 'persuasion',
+      validation: (rule) => [
+        rule.required().error('יש להזין כותרת ראשית'),
+        rule.max(140).error('הכותרת הראשית יכולה להכיל עד 140 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'persuasionEmphasis',
+      title: 'משפט מודגש',
+      type: 'string',
+      group: 'persuasion',
+      validation: (rule) => [
+        rule.required().error('יש להזין משפט מודגש'),
+        rule.max(65).error('המשפט המודגש יכול להכיל עד 65 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'persuasionInvitation',
+      title: 'טקסט הזמנה',
+      type: 'text',
+      rows: 3,
+      group: 'persuasion',
+      validation: (rule) => [
+        rule.required().error('יש להזין טקסט הזמנה'),
+        rule.max(160).error('טקסט ההזמנה יכול להכיל עד 160 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'persuasionNote',
+      title: 'הערה מתחת לכפתור',
+      description: 'הטקסט הקטן שמופיע מתחת לכפתור ההצטרפות.',
+      type: 'string',
+      group: 'persuasion',
+      validation: (rule) => [
+        rule.required().error('יש להזין הערה מתחת לכפתור'),
+        rule.max(80).error('ההערה יכולה להכיל עד 80 תווים'),
+      ],
+    }),
+    defineField({
+      name: 'persuasionImageOne',
+      title: 'תמונה 1',
+      description: 'אחת מארבע התמונות שמוצגות יחד מתחת לאזור ההזמנה.',
+      type: 'image',
+      group: 'persuasion',
+      validation: (rule) => rule.required().error('יש לבחור תמונה 1'),
+    }),
+    defineField({
+      name: 'persuasionImageTwo',
+      title: 'תמונה 2',
+      type: 'image',
+      group: 'persuasion',
+      validation: (rule) => rule.required().error('יש לבחור תמונה 2'),
+    }),
+    defineField({
+      name: 'persuasionImageThree',
+      title: 'תמונה 3',
+      type: 'image',
+      group: 'persuasion',
+      validation: (rule) => rule.required().error('יש לבחור תמונה 3'),
+    }),
+    defineField({
+      name: 'persuasionImageFour',
+      title: 'תמונה 4',
+      type: 'image',
+      group: 'persuasion',
+      validation: (rule) => rule.required().error('יש לבחור תמונה 4'),
     }),
   ],
   preview: {
