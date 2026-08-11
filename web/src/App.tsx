@@ -63,12 +63,18 @@ import {
   type CommunityTripContent,
   type CommunityTripDocument,
 } from './lib/communityTrip'
+import {
+  FALLBACK_ABOUT_TRIP,
+  resolveAboutTrip,
+  type AboutTripContent,
+  type AboutTripDocument,
+} from './lib/aboutTrip'
 import type { SanityImage } from './types/sanity'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument & AboutTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -104,6 +110,17 @@ function getPreviousTripsGalleryImageUrl(image: SanityImage | null, fallback: st
 }
 
 function getCommunityImageUrl(image: SanityImage | null, fallback: string): string {
+  if (!image?.asset) return fallback
+
+  try {
+    const url = urlForImage(image).auto('format').url()
+    return /^https:\/\//.test(url) ? url : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function getAboutImageUrl(image: SanityImage | null, fallback: string): string {
   if (!image?.asset) return fallback
 
   try {
@@ -250,6 +267,7 @@ function App() {
   const [previousTripsGallery, setPreviousTripsGallery] = useState<PreviousTripsGalleryContent>(FALLBACK_PREVIOUS_TRIPS_GALLERY)
   const [packageTrip, setPackageTrip] = useState<PackageTripContent>(FALLBACK_PACKAGE_TRIP)
   const [communityTrip, setCommunityTrip] = useState<CommunityTripContent>(FALLBACK_COMMUNITY_TRIP)
+  const [aboutTrip, setAboutTrip] = useState<AboutTripContent>(FALLBACK_ABOUT_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -274,6 +292,7 @@ function App() {
           setPreviousTripsGallery(resolvePreviousTripsGallery(trip))
           setPackageTrip(resolvePackageTrip(trip))
           setCommunityTrip(resolveCommunityTrip(trip))
+          setAboutTrip(resolveAboutTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -304,6 +323,8 @@ function App() {
   const communityMainImage = getCommunityImageUrl(communityTrip.communityMainImage, communityMainFallback)
   const communitySecondaryImageOne = getCommunityImageUrl(communityTrip.communitySecondaryImageOne, communitySecondaryOneFallback)
   const communitySecondaryImageTwo = getCommunityImageUrl(communityTrip.communitySecondaryImageTwo, communitySecondaryTwoFallback)
+  const aboutPortraitFallback = asset('aboutMe')
+  const aboutPortraitImage = getAboutImageUrl(aboutTrip.aboutPortraitImage, aboutPortraitFallback)
   const tripPrice = formatPackagePrice(packageTrip)
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
@@ -416,8 +437,8 @@ function App() {
 
         <section className="about section section--white" aria-labelledby="about-title">
           <div className="split-card split-card--about content-container">
-            <div className="split-card__image"><img src={asset('aboutMe')} alt="Talia Dahan Travel ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
-            <div className="split-card__copy"><p className="section-eyebrow">מי שמאחורי כל פרט</p><h2 id="about-title" className="green-title">נעים מאוד, אני טליה</h2><p className="about__lead">אני מאמינה שטיול טוב מתחיל הרבה לפני שעולים למטוס.</p><p>אחרי שנים של טיולים והפקות, הדבר שהכי מרגש אותי הוא ליצור מסעות שבהם מרגישים שמישהו באמת חשב על האנשים, על הקצב ועל כל הפרטים הקטנים.</p><p>אני בוחרת בקפידה את המסלול, מקומות האירוח והחוויות, מכינה את הקבוצה לקראת היציאה ונשארת מעורבת לאורך הדרך. חשוב לי שכל אחת ואחד ירגישו בטוחים, רצויים ופנויים פשוט ליהנות.</p><p className="about__signature"><strong>אני מזמינה אותך להצטרף למסע שמתוכנן במקצועיות ומרגיש אישי מהרגע הראשון.</strong></p><a className="primary-button" href="/#package">טליה, אני רוצה להצטרף <span aria-hidden="true">✈</span></a></div>
+            <div className="split-card__image"><img src={aboutPortraitImage} alt="Talia Dahan Travel ליד מלון בורג׳ אל ערב" loading="lazy" onError={({ currentTarget }) => { currentTarget.onerror = null; currentTarget.src = aboutPortraitFallback }} /></div>
+            <div className="split-card__copy"><p className="section-eyebrow">{aboutTrip.aboutEyebrow}</p><h2 id="about-title" className="green-title">{aboutTrip.aboutHeading}</h2><p className="about__lead">{aboutTrip.aboutOpeningSentence}</p><p>{aboutTrip.aboutParagraphOne}</p><p>{aboutTrip.aboutParagraphTwo}</p><p className="about__signature"><strong>{aboutTrip.aboutClosingParagraph}</strong></p><a className="primary-button" href="/#package">טליה, אני רוצה להצטרף <span aria-hidden="true">✈</span></a></div>
           </div>
         </section>
 

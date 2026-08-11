@@ -46,6 +46,10 @@ export const trip = defineType({
       title: 'קהילת המטיילים',
     },
     {
+      name: 'aboutTalia',
+      title: 'אודות טליה',
+    },
+    {
       name: 'previousTripsGallery',
       title: 'גלריית טיולים קודמים',
     },
@@ -817,6 +821,95 @@ export const trip = defineType({
       type: 'image',
       group: 'community',
       validation: (rule) => rule.required().error('יש לבחור תמונה משנית 2'),
+    }),
+    defineField({
+      name: 'aboutEyebrow',
+      title: 'כותרת קטנה',
+      type: 'string',
+      group: 'aboutTalia',
+      validation: (rule) => [
+        rule.required().error('יש להזין כותרת קטנה'),
+        rule.max(40).error('הכותרת יכולה להכיל עד 40 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'aboutHeading',
+      title: 'כותרת ראשית',
+      type: 'string',
+      group: 'aboutTalia',
+      validation: (rule) => [
+        rule.required().error('יש להזין כותרת ראשית'),
+        rule.max(35).error('הכותרת יכולה להכיל עד 35 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'aboutOpeningSentence',
+      title: 'משפט פתיחה',
+      type: 'string',
+      group: 'aboutTalia',
+      validation: (rule) => [
+        rule.required().error('יש להזין משפט פתיחה'),
+        rule.max(80).error('המשפט יכול להכיל עד 80 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'aboutParagraphOne',
+      title: 'פסקה ראשונה',
+      type: 'text',
+      rows: 4,
+      group: 'aboutTalia',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה הראשונה'),
+        rule.max(180).error('הפסקה יכולה להכיל עד 180 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'aboutParagraphTwo',
+      title: 'פסקה שנייה',
+      type: 'text',
+      rows: 4,
+      group: 'aboutTalia',
+      validation: (rule) => [
+        rule.required().error('יש להזין את הפסקה השנייה'),
+        rule.max(200).error('הפסקה יכולה להכיל עד 200 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'aboutClosingParagraph',
+      title: 'פסקת סיום',
+      type: 'text',
+      rows: 3,
+      group: 'aboutTalia',
+      validation: (rule) => [
+        rule.required().error('יש להזין את פסקת הסיום'),
+        rule.max(120).error('פסקת הסיום יכולה להכיל עד 120 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'aboutPortraitImage',
+      title: 'תמונה של טליה',
+      description: 'תמונה זו מחליפה את הדיוקן שמופיע לצד טקסט האודות.',
+      type: 'image',
+      group: 'aboutTalia',
+      validation: (rule) => rule.required().error('יש לבחור תמונה של טליה'),
     }),
     defineField({
       name: 'previousTripsGalleryImageOne',
