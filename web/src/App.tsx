@@ -189,11 +189,6 @@ function App() {
               <p><span>עיר</span><i aria-hidden="true">·</i><span>מדבר</span><i aria-hidden="true">·</i><span>ים</span></p>
             </div>
           </div>
-          <div className="benefit-cards content-container">
-            <article><span aria-hidden="true">✦</span><h2>אירוח ברמה גבוהה</h2><p>מלונות נבחרים, ארוחות מצוינות וכל פרט קטן שכבר סגרנו עבורך.</p></article>
-            <article><span aria-hidden="true">◎</span><h2>חוויה חברתית</h2><p>קבוצה קטנה, נעימה ומגוונת שאפשר להרגיש בה בבית.</p></article>
-            <article><span aria-hidden="true">◇</span><h2>הכול מתוכנן מראש</h2><p>את רק מגיעה עם מזוודה והתרגשות. אנחנו דואגות לכל השאר.</p></article>
-          </div>
           <div className="persuasion text-container">
             <p>כבר הרבה זמן שאת חושבת על חופשה שמאפשרת לך להתנתק מהשגרה, לראות עולם ולהרגיש שמטפלים בך?</p>
             <p><strong>פשוט לקחת רגע ולעשות משהו בשבילך.</strong></p>
@@ -203,6 +198,14 @@ function App() {
           </div>
           <div className="photo-strip content-container" aria-label="טעימה מהמסעות של טליה">
             {['img1', 'img6', 'img9', 'img11'].map((name) => <img key={name} src={asset(name)} alt="רגע מטיול של טליה" loading="lazy" />)}
+          </div>
+        </section>
+
+        <section className="benefits-section" aria-label="יתרונות הטיול">
+          <div className="benefit-cards content-container">
+            <article><span aria-hidden="true">✦</span><h2>אירוח ברמה גבוהה</h2><p>מלונות נבחרים, ארוחות מצוינות וכל פרט קטן שכבר סגרנו עבורך.</p></article>
+            <article><span aria-hidden="true">◎</span><h2>חוויה חברתית</h2><p>קבוצה קטנה, נעימה ומגוונת שאפשר להרגיש בה בבית.</p></article>
+            <article><span aria-hidden="true">◇</span><h2>הכול מתוכנן מראש</h2><p>את רק מגיעה עם מזוודה והתרגשות. אנחנו דואגות לכל השאר.</p></article>
           </div>
         </section>
 
