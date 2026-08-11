@@ -159,7 +159,7 @@ function App() {
           </video>
           <div className="hero__overlay" />
           <div className="hero__panel">
-            <img className="hero__logo" src={asset('logo')} alt="Talya Dahan Travel" />
+            <img className="hero__logo" src={asset('logo')} alt="Talia Dahan Travel" />
             <p className="hero__eyebrow">מסע בוטיק ל{tripName}</p>
             <h1 id="hero-title">איחוד האמירויות</h1>
             <p className="hero__headline">חופשה אחרת. <span>צבעונית, מפנקת ומלאה ברגעים שלא שוכחים.</span></p>
@@ -168,7 +168,6 @@ function App() {
               <p><strong>12–17 בנובמבר 2026</strong><span>תאריכי המסע</span></p>
               <p><strong>6 ימים <i aria-hidden="true">|</i> 5 לילות</strong><span>הכול כבר מתוכנן עבורך</span></p>
             </div>
-            <a className="primary-button hero__cta" href="/#package">אני רוצה לשמוע עוד <span aria-hidden="true">✈</span></a>
           </div>
         </section>
 
@@ -256,7 +255,7 @@ function App() {
 
         <section className="about section section--white" aria-labelledby="about-title">
           <div className="split-card split-card--about content-container">
-            <div className="split-card__image"><img src={asset('aboutMe')} alt="Talya Dahan Travel ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
+            <div className="split-card__image"><img src={asset('aboutMe')} alt="Talia Dahan Travel ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
             <div className="split-card__copy"><p className="section-eyebrow">מי שמאחורי כל פרט</p><h2 id="about-title" className="green-title">נעים מאוד, אני טליה</h2><p className="about__lead">אני מאמינה שטיול טוב מתחיל הרבה לפני שעולים למטוס.</p><p>אחרי שנים של טיולים והפקות, הדבר שהכי מרגש אותי הוא ליצור מסעות שבהם מרגישים שמישהו באמת חשב על האנשים, על הקצב ועל כל הפרטים הקטנים.</p><p>אני בוחרת בקפידה את המסלול, מקומות האירוח והחוויות, מכינה את הקבוצה לקראת היציאה ונשארת מעורבת לאורך הדרך. חשוב לי שכל אחת ואחד ירגישו בטוחים, רצויים ופנויים פשוט ליהנות.</p><p className="about__signature"><strong>אני מזמינה אותך להצטרף למסע שמתוכנן במקצועיות ומרגיש אישי מהרגע הראשון.</strong></p><a className="primary-button" href="/#package">טליה, אני רוצה להצטרף <span aria-hidden="true">✈</span></a></div>
           </div>
         </section>
@@ -304,13 +303,13 @@ function App() {
         <div className="footer__inner content-container">
           <a className="footer__brand" href="#main" aria-label="טליה דהן - טיולי בוטיק — חזרה לראש העמוד"><img src={asset('logo')} alt="" /><span><strong>טליה דהן - טיולי בוטיק</strong><small>טיולים וחוויות לדתיים ולמסורתיים</small></span></a>
           <div className="footer__connect"><p>בואי להכיר, לשאול ולהתחיל לתכנן את המסע הבא.</p><a className="footer__whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer"><SocialIcon platform="whatsapp" />דברי איתי בוואטסאפ</a></div>
-          <nav className="footer__social" aria-label="Talya Dahan Travel ברשתות החברתיות">
+          <nav className="footer__social" aria-label="Talia Dahan Travel ברשתות החברתיות">
             <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="אינסטגרם"><SocialIcon platform="instagram" /></a>
             <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="פייסבוק"><SocialIcon platform="facebook" /></a>
             <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="וואטסאפ"><SocialIcon platform="whatsapp" /></a>
           </nav>
         </div>
-        <div className="footer__bottom content-container"><nav aria-label="קישורים שימושיים"><a href="#package">פרטי החבילה</a><a href="#faq">שאלות נפוצות</a><a href="/privacy">מדיניות פרטיות</a></nav><p>© 2026 Talya Dahan Travel · כל הזכויות שמורות</p></div>
+        <div className="footer__bottom content-container"><nav aria-label="קישורים שימושיים"><a href="#package">פרטי החבילה</a><a href="#faq">שאלות נפוצות</a><a href="/privacy">מדיניות פרטיות</a></nav><p>© 2026 Talia Dahan Travel · כל הזכויות שמורות</p></div>
       </footer>
       <a className="floating-whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="פתיחת שיחה בוואטסאפ">
         <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
