@@ -24,11 +24,11 @@ const packageItems = [
 ]
 
 const faqs = [
-  ['האם אפשר להגיע לבד? אני חוששת שלא אכיר אף אחת', 'בהחלט. רבות מהמשתתפות מגיעות לבד, וכבר מהשיחה הראשונה ומהמפגש הקבוצתי נוצרת היכרות נעימה. הקבוצה הקטנה מאפשרת להתחבר בקצב טבעי.'],
-  ['מהן אפשרויות הלינה?', 'הלינה היא בחדרים זוגיים במלונות נבחרים. ניתן לבקש שותפה לחדר, ובכפוף לזמינות ניתן לבחור בחדר יחיד בתוספת תשלום.'],
-  ['איך את מצוותת בין השותפות לחדר?', 'לפני הטיול אנחנו מקיימות שיחה אישית קצרה ומנסות להתאים בין משתתפות לפי גיל, הרגלים והעדפות.'],
-  ['באילו דרכים ניתן לשלם?', 'אפשר לשלם בהעברה בנקאית או בכרטיס אשראי, ועד 10 תשלומים. מקדמה ראשונית שומרת את המקום בקבוצה.'],
-  ['מה מדיניות הביטולים?', 'כל תנאי הביטול נשלחים מראש ובשקיפות לפני ההרשמה, בהתאם למועד הביטול ולהתחייבויות מול חברות התעופה והספקים.'],
+  ['האם אפשר להצטרף לטיול לבד?', 'בהחלט. רבים מצטרפים בלי להכיר מראש את שאר הקבוצה, וההיכרות מתחילה כבר לפני היציאה.'],
+  ['מה רמת הכשרות במהלך הטיול?', 'רמת הכשרות משתנה לפי היעד והמסלול. בכל טיול מפורט מראש אילו ארוחות כלולות ומהי רמת הכשרות הזמינה.'],
+  ['האם הטיסות וההעברות כלולות במחיר?', 'ההרכב משתנה בין הטיולים. כל הטיסות, ההעברות והשירותים הכלולים מפורטים בבירור בסעיף ״מה החבילה כוללת״.'],
+  ['מה רמת הקושי והקצב של הטיול?', 'לכל מסלול קצב ורמת מאמץ משלו. לפני ההרשמה נמסר מידע על הליכות, מדרגות, נסיעות וכל דרישה מיוחדת.'],
+  ['מה מדיניות הביטול והתשלום?', 'אפשרויות התשלום ותנאי הביטול נקבעים לכל טיול בנפרד ונמסרים בצורה מסודרת ושקופה לפני ההרשמה.'],
 ]
 
 function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: boolean }) {
@@ -73,16 +73,25 @@ function App() {
               <p><strong>12–17 בנובמבר 2026</strong><span>תאריכי המסע</span></p>
               <p><strong>6 ימים <i aria-hidden="true">|</i> 5 לילות</strong><span>הכול כבר מתוכנן עבורך</span></p>
             </div>
-            <a className="primary-button hero__cta" href="#package">אני רוצה לשמוע עוד <span aria-hidden="true">✈</span></a>
+            <a className="primary-button hero__cta" href="/#package">אני רוצה לשמוע עוד <span aria-hidden="true">✈</span></a>
           </div>
         </section>
 
-        <section className="intro section section--mint" id="discover">
-          <div className="text-container">
-            <p>דובאי ואבו דאבי הן הרבה יותר ממגדלים נוצצים. זה מפגש בין מסורת לעתיד, בין שווקים ריחניים למסעדות מעולות, בין ים כחול לשקט הגדול של המדבר.</p>
-            <p>יצרתי עבורך מסע שבו כל פרט כבר מחכה: טיסות נוחות, מלונות ברמה גבוהה, מסלול עשיר אבל לא עמוס, קבוצה קטנה וליווי אישי מהשיחה הראשונה ועד החזרה הביתה.</p>
-            <p>אנחנו נצא לגלות מקומות מפתיעים, נאכל טוב, נצטלם, נצחק, נעצור לקפה מול הנוף ונשאיר גם זמן פשוט להיות בחופשה.</p>
-            <p className="intro__strong">אם גם את מרגישה שהגיע הזמן לעצור הכול ולתת לעצמך כמה ימים של חופש אמיתי — המסע הזה נוצר בשבילך.</p>
+        <section className="intro section section--mint" id="discover" aria-labelledby="story-title">
+          <div className="story content-container">
+            <div className="story__copy">
+              <p className="section-eyebrow">הסיפור של המסע</p>
+              <h2 id="story-title">שתי ערים.<br /><em>עולם שלם של ניגודים.</em></h2>
+              <p className="story__lead">דובאי ואבו דאבי הן הרבה יותר ממגדלים נוצצים. זהו מפגש מסקרן בין מסורת לעתיד, בין שווקים ריחניים למסעדות מעולות, ובין ים כחול לשקט הגדול של המדבר.</p>
+              <p>יצרתי עבורך מסע שבו כל פרט כבר מחכה: טיסות נוחות, מלונות ברמה גבוהה, מסלול עשיר שאינו עמוס, קבוצה קטנה וליווי אישי — מהשיחה הראשונה ועד החזרה הביתה.</p>
+              <p>נצא לגלות מקומות מפתיעים, נאכל טוב, נצטלם, נצחק ונעצור לקפה מול הנוף. לצד כל החוויות, יישאר גם זמן <strong>פשוט להיות בחופשה.</strong></p>
+              <p className="story__promise">אם הגיע הזמן לעצור הכול ולתת לעצמך כמה ימים של חופש אמיתי — המסע הזה נוצר בשבילך.</p>
+            </div>
+            <div className="story__visual" aria-label="נופים וחוויות מאיחוד האמירויות">
+              <figure className="story__image story__image--main"><img src={asset('img9')} alt="דובאי מוארת בשעות הערב" loading="lazy" /></figure>
+              <figure className="story__image story__image--accent"><img src={asset('img10')} alt="שקיעה זהובה במדבר" loading="lazy" /></figure>
+              <p><span>עיר</span><i aria-hidden="true">·</i><span>מדבר</span><i aria-hidden="true">·</i><span>ים</span></p>
+            </div>
           </div>
           <div className="benefit-cards content-container">
             <article><span aria-hidden="true">✦</span><h2>אירוח ברמה גבוהה</h2><p>מלונות נבחרים, ארוחות מצוינות וכל פרט קטן שכבר סגרנו עבורך.</p></article>
@@ -93,7 +102,7 @@ function App() {
             <p>כבר הרבה זמן שאת חושבת על חופשה שמאפשרת לך להתנתק מהשגרה, לראות עולם ולהרגיש שמטפלים בך?</p>
             <p><strong>פשוט לקחת רגע ולעשות משהו בשבילך.</strong></p>
             <p>זה הזמן. אני מזמינה אותך להצטרף לקבוצה קטנה ואיכותית, לפגוש נשים חדשות ולחזור עם הרבה יותר מתמונות.</p>
-            <a className="primary-button" href="#register">כן, אני רוצה לשמוע עוד <span aria-hidden="true">✈</span></a>
+            <a className="primary-button" href="/#package">כן, אני רוצה לשמוע עוד <span aria-hidden="true">✈</span></a>
             <small>מספר המקומות מוגבל כדי לשמור על חוויה אישית ונעימה</small>
           </div>
           <div className="photo-strip content-container" aria-label="טעימה מהמסעות של טליה">
@@ -113,7 +122,7 @@ function App() {
               <li>זמן חופשי לקניות, ספא, ים או קפה בקצב שלך</li>
               <li>מלונות מפנקים, תחבורה פרטית וליווי אישי לכל אורך הדרך</li>
             </ul>
-            <a className="primary-button" href="#register">שמרי לי מקום <span aria-hidden="true">✈</span></a>
+            <a className="primary-button" href="/#package">שמרי לי מקום <span aria-hidden="true">✈</span></a>
           </div>
         </section>
 
@@ -142,10 +151,10 @@ function App() {
           </div>
         </section>
 
-        <section className="about section section--white">
+        <section className="about section section--white" aria-labelledby="about-title">
           <div className="split-card split-card--about content-container">
             <div className="split-card__image"><img src={asset('aboutMe')} alt="טליה זהור ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
-            <div className="split-card__copy"><h2 className="green-title">נעים מאוד, אני טליה</h2><p>אני חיה ונושמת אנשים, חופשות וחיבורים אנושיים. אחרי שנים של טיולים והפקות, הבנתי שהדבר שהכי מרגש אותי הוא ליצור מסעות שבהם אנשים מרגישים שמישהו באמת חשב עליהם.</p><p>אני מקפידה על קבוצות קטנות, חוויות מיוחדות, מסלול מדויק ואווירה שמאפשרת לכל אחת ואחד פשוט ליהנות.</p><p><strong>אני מזמינה אותך להצטרף אליי למסע הקרוב ולתת לעצמך חופשה טובה באמת.</strong></p><a className="primary-button" href="#register">טליה, אני רוצה להצטרף <span aria-hidden="true">✈</span></a></div>
+            <div className="split-card__copy"><p className="section-eyebrow">מי שמאחורי כל פרט</p><h2 id="about-title" className="green-title">נעים מאוד, אני טליה</h2><p className="about__lead">אני מאמינה שטיול טוב מתחיל הרבה לפני שעולים למטוס.</p><p>אחרי שנים של טיולים והפקות, הדבר שהכי מרגש אותי הוא ליצור מסעות שבהם מרגישים שמישהו באמת חשב על האנשים, על הקצב ועל כל הפרטים הקטנים.</p><p>אני בוחרת בקפידה את המסלול, מקומות האירוח והחוויות, מכינה את הקבוצה לקראת היציאה ונשארת מעורבת לאורך הדרך. חשוב לי שכל אחת ואחד ירגישו בטוחים, רצויים ופנויים פשוט ליהנות.</p><p className="about__signature"><strong>אני מזמינה אותך להצטרף למסע שמתוכנן במקצועיות ומרגיש אישי מהרגע הראשון.</strong></p><a className="primary-button" href="/#package">טליה, אני רוצה להצטרף <span aria-hidden="true">✈</span></a></div>
           </div>
         </section>
 
@@ -164,7 +173,7 @@ function App() {
         </section>
 
         <section className="faq section section--white" aria-labelledby="faq-title">
-          <div className="content-container"><h2 id="faq-title" className="green-title">יש לי שאלה...</h2><div className="accordion">
+          <div className="faq__inner content-container"><p className="section-eyebrow">כל מה שחשוב לדעת</p><h2 id="faq-title" className="green-title">שאלות נפוצות</h2><p className="faq__intro">ריכזנו תשובות קצרות לשאלות שעולות לפני שמצטרפים. הפרטים המדויקים מופיעים תמיד בעמוד של כל טיול.</p><div className="accordion">
             {faqs.map(([question, answer], index) => { const open = openFaq === index; return <article key={question}><h3><button type="button" aria-expanded={open} aria-controls={`faq-${index}`} onClick={() => setOpenFaq(open ? null : index)}><span>{question}</span><i aria-hidden="true">⌄</i></button></h3><div id={`faq-${index}`} hidden={!open}><p>{answer}</p></div></article> })}
           </div></div>
         </section>
