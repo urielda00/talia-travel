@@ -173,6 +173,7 @@ function App() {
         </section>
 
         <section className="intro section section--mint" id="discover" aria-labelledby="story-title">
+          <img className="section-brand-mark section-brand-mark--story" src={asset('logo')} alt="" aria-hidden="true" />
           <div className="story content-container">
             <div className="story__copy">
               <p className="section-eyebrow">הסיפור של המסע</p>
@@ -208,6 +209,7 @@ function App() {
 
         <section className="awaits section section--mint">
           <div className="white-panel content-container">
+            <img className="section-brand-mark section-brand-mark--awaits" src={asset('logo')} alt="" aria-hidden="true" />
             <h2 className="green-title">אז מה מחכה לנו? <span>(כן, הכול כלול!)</span></h2>
             <ul className="awaits__list">
               <li>יום מדברי מלא עם ג׳יפים, שקיעה וארוחת ערב תחת הכוכבים</li>
@@ -224,6 +226,7 @@ function App() {
 
         <section className="trips-gallery" aria-labelledby="trips-title">
           <h2 id="trips-title" className="green-title">רגעים קטנים מהטיולים הקודמים שלנו</h2>
+          <img className="section-brand-mark section-brand-mark--gallery" src={asset('logo')} alt="" aria-hidden="true" />
           <div className="trips-gallery__grid">
             {previousTrips.map(([name, alt], index) => <figure className={`trip-photo trip-photo--${index + 1}`} key={name}><img src={asset(name)} alt={alt} loading="lazy" /></figure>)}
           </div>
