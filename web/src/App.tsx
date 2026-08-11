@@ -21,6 +21,12 @@ import {
   type BenefitTripDocument,
 } from './lib/benefitTrip'
 import {
+  FALLBACK_AWAITS_TRIP,
+  resolveAwaitsTrip,
+  type AwaitsTripContent,
+  type AwaitsTripDocument,
+} from './lib/awaitsTrip'
+import {
   FALLBACK_PERSUASION_TRIP,
   resolvePersuasionTrip,
   type PersuasionTripContent,
@@ -42,7 +48,7 @@ import {
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -209,6 +215,7 @@ function App() {
   const [storyTrip, setStoryTrip] = useState<StoryTripContent>(FALLBACK_STORY_TRIP)
   const [persuasionTrip, setPersuasionTrip] = useState<PersuasionTripContent>(FALLBACK_PERSUASION_TRIP)
   const [benefitTrip, setBenefitTrip] = useState<BenefitTripContent>(FALLBACK_BENEFIT_TRIP)
+  const [awaitsTrip, setAwaitsTrip] = useState<AwaitsTripContent>(FALLBACK_AWAITS_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -229,6 +236,7 @@ function App() {
           setStoryTrip(resolveStoryTrip(trip))
           setPersuasionTrip(resolvePersuasionTrip(trip))
           setBenefitTrip(resolveBenefitTrip(trip))
+          setAwaitsTrip(resolveAwaitsTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -317,15 +325,15 @@ function App() {
         <section className="awaits section section--mint">
           <div className="white-panel content-container">
             <img className="section-brand-mark section-brand-mark--awaits" src={asset('logo')} alt="" aria-hidden="true" />
-            <h2 className="green-title">אז מה מחכה לנו? <span>(כן, הכול כלול!)</span></h2>
+            <h2 className="green-title">אז מה מחכה לנו? <span>{awaitsTrip.awaitsSubtitle}</span></h2>
             <ul className="awaits__list">
-              <li>יום מדברי מלא עם ג׳יפים, שקיעה וארוחת ערב תחת הכוכבים</li>
-              <li>סיור בין גורדי השחקים, המרינה ונקודות התצפית הכי יפות בדובאי</li>
-              <li>ביקור באבו דאבי ובמסגד שייח׳ זאיד המרשים</li>
-              <li>שווקים, תבלינים, זהב וטעמים מקומיים בעיר העתיקה</li>
-              <li>שייט ערב, מוזיקה, אווירה והמון רגעים שמחים יחד</li>
-              <li>זמן חופשי לקניות, ספא, ים או קפה בקצב שלך</li>
-              <li>מלונות מפנקים, תחבורה פרטית וליווי אישי לכל אורך הדרך</li>
+              <li>{awaitsTrip.awaitsItemOne}</li>
+              <li>{awaitsTrip.awaitsItemTwo}</li>
+              <li>{awaitsTrip.awaitsItemThree}</li>
+              <li>{awaitsTrip.awaitsItemFour}</li>
+              <li>{awaitsTrip.awaitsItemFive}</li>
+              <li>{awaitsTrip.awaitsItemSix}</li>
+              <li>{awaitsTrip.awaitsItemSeven}</li>
             </ul>
             <a className="primary-button" href="/#package">שמרי לי מקום <span aria-hidden="true">✈</span></a>
           </div>
