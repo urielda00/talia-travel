@@ -54,8 +54,6 @@ function PrivacyPolicy() {
 
   return (
     <div className="privacy-page" dir="rtl">
-      <a className="skip-link" href="#privacy-main">דלגי לתוכן</a>
-
       <header className="privacy-header privacy-brand-strip">
         <div className="privacy-header__inner content-container">
           <a className="footer__brand" href="/" aria-label="טליה דהן - טיולי בוטיק — חזרה לעמוד הראשי">

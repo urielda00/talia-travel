@@ -10,8 +10,6 @@
 .section { padding-block: clamp(3.8rem, 7vw, 6rem); }
 .section--mint { background: var(--color-cream); }
 .section--white { background: var(--color-white); }
-.skip-link { position: fixed; z-index: 100; inset: .5rem auto auto .5rem; padding: .6rem 1rem; background: var(--color-white); color: var(--color-blue-deep); transform: translateY(-150%); }
-.skip-link:focus { transform: translateY(0); }
 .green-title { max-width: 18ch; margin: 0 auto 2rem; color: var(--color-blue); font-family: 'Noto Serif Hebrew', 'Times New Roman', serif; font-size: clamp(2.05rem, 6vw, 3.35rem); font-weight: 700; line-height: 1.08; letter-spacing: -.025em; text-align: center; text-wrap: balance; }
 .green-title span { white-space: nowrap; }
 .primary-button { display: inline-flex; min-height: 2.9rem; align-items: center; justify-content: center; gap: .65rem; padding: .65rem 1.35rem; border: 1px solid transparent; border-radius: var(--radius-control); background: var(--color-blue); box-shadow: 0 .45rem 1rem rgb(23 59 109 / 14%); color: var(--color-white); font-size: .96rem; font-weight: 700; line-height: 1.35; text-decoration: none; transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }

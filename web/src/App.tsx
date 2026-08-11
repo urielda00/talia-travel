@@ -152,7 +152,6 @@ function App() {
 
   return (
     <div className="landing" dir="rtl">
-      <a className="skip-link" href="#main">דלגי לתוכן</a>
       <main id="main">
         <section className="hero" aria-labelledby="hero-title">
           <video className="hero__bg" autoPlay muted loop playsInline poster="/assets/mainImg.jpg" aria-hidden="true">
