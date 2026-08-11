@@ -102,6 +102,7 @@
 .lead-form input::placeholder { color: #777; }
 .lead-form__consent { display: flex; gap: .4rem; align-items: flex-start; justify-content: center; margin-block: .65rem; font-size: .72rem; }
 .lead-form__consent input { margin-top: .25rem; }
+.lead-form__consent a { color: inherit; font-weight: 700; text-underline-offset: .16rem; }
 .lead-form button { width: 100%; min-height: 2.8rem; border: 0; border-radius: .55rem; background: #cc7885; color: #fff; cursor: pointer; font-size: .96rem; font-weight: 700; line-height: 1.35; }
 .package__fineprint { max-width: 48rem; margin: 1rem auto 0; font-size: .66rem; font-style: italic; line-height: 1.45; }
 
@@ -186,6 +187,39 @@
 .footer__bottom nav { display: flex; gap: 1rem; }
 .footer__bottom a { color: #e4e6da; font-size: .72rem; text-underline-offset: .2rem; }
 .footer__bottom p { max-width: 14rem; margin: 0; color: #bdc9bb; font-size: .66rem; }
+
+/* Privacy policy */
+.privacy-page { min-height: 100vh; overflow: clip; background: #f7f3e9; color: #29372e; }
+.privacy-header { border-bottom: 1px solid rgb(49 95 52 / 14%); background: rgb(255 253 247 / 94%); }
+.privacy-header__inner { display: flex; min-height: 5.2rem; align-items: center; justify-content: space-between; gap: 1rem; }
+.privacy-brand { display: inline-flex; align-items: center; gap: .7rem; color: #315f34; text-decoration: none; }
+.privacy-brand img { width: 3.5rem; height: 3.5rem; border-radius: 50%; object-fit: cover; box-shadow: 0 .2rem .7rem rgb(44 39 33 / 12%); }
+.privacy-brand span { display: grid; line-height: 1.1; }
+.privacy-brand strong { font-family: 'Frank Ruhl Libre', 'Times New Roman', serif; font-size: 1.25rem; }
+.privacy-brand small { margin-top: .3rem; color: #687269; font-size: .62rem; font-weight: 700; }
+.privacy-back-link { display: inline-flex; min-height: 2.6rem; align-items: center; gap: .4rem; padding: .5rem .8rem; border: 1px solid #bdc8b7; border-radius: .6rem; color: #315f34; font-size: .78rem; font-weight: 700; text-decoration: none; }
+.privacy-hero { position: relative; padding-block: clamp(3.5rem, 8vw, 6.5rem); background: linear-gradient(135deg, #dff4e5 0%, #edf7e7 55%, #f8eee6 100%); }
+.privacy-hero::after { position: absolute; inset: auto 0 0; height: .35rem; background: linear-gradient(90deg, #ce7886, #e3b59c, #74a977); content: ''; }
+.privacy-hero__inner { max-width: 52rem; }
+.privacy-hero .section-eyebrow { margin-bottom: .5rem; }
+.privacy-hero h1 { margin: 0 0 .7rem; color: #315f34; font-family: 'Frank Ruhl Libre', 'Times New Roman', serif; font-size: clamp(2.7rem, 9vw, 5rem); font-weight: 600; line-height: 1; }
+.privacy-hero p:not(.section-eyebrow) { max-width: 43rem; margin: 0 0 .8rem; color: #465248; font-size: clamp(.98rem, 2vw, 1.12rem); line-height: 1.75; }
+.privacy-hero small { color: #6a746c; font-size: .74rem; }
+.privacy-content { max-width: 52rem; padding-block: clamp(2.5rem, 6vw, 5rem); }
+.privacy-intro { margin-bottom: 1rem; padding: 1.1rem 1.2rem; border-inline-start: 3px solid #ce7886; background: #fffdf8; box-shadow: 0 .5rem 1.8rem rgb(51 72 56 / 5%); }
+.privacy-intro p { margin: 0; font-weight: 600; line-height: 1.75; }
+.privacy-sections section { padding-block: 1.55rem; border-bottom: 1px solid #d9ddcf; }
+.privacy-sections h2 { margin: 0 0 .45rem; color: #315f34; font-family: inherit; font-size: clamp(1.18rem, 3vw, 1.42rem); font-weight: 750; line-height: 1.35; }
+.privacy-sections p { margin: 0; color: #4b554e; font-size: .94rem; line-height: 1.85; }
+.privacy-sections .privacy-contact { margin-top: 1.6rem; padding: 1.45rem; border: 0; border-radius: .85rem; background: #315f34; color: #fff; }
+.privacy-contact h2 { color: #fff; }
+.privacy-contact p { color: #e6eee4; }
+.privacy-contact a { display: inline-flex; margin-top: .8rem; color: #fff; font-weight: 750; text-underline-offset: .2rem; }
+.privacy-main__back { margin-top: 2.2rem; }
+.privacy-footer { padding-block: 1.3rem; background: #294a3a; color: #dfe6dc; }
+.privacy-footer > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .7rem 1.5rem; }
+.privacy-footer p { margin: 0; font-size: .68rem; }
+.privacy-footer a { color: inherit; font-size: .72rem; text-underline-offset: .18rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .floating-whatsapp { position: fixed; z-index: 30; inset: auto max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) auto; display: grid; width: 3.375rem; height: 3.375rem; padding: 0; place-items: center; overflow: hidden; border: 0; border-radius: 50%; box-shadow: 0 .45rem 1.15rem rgb(28 67 43 / 20%); background: #25d366; color: #fff; line-height: 0; text-decoration: none; transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease; }
 .floating-whatsapp svg { display: block; width: 2rem; height: 2rem; }
@@ -245,6 +279,11 @@
   .footer__connect { text-align: center; }
   .footer__social { justify-content: flex-end; }
   .footer__bottom { flex-direction: row; justify-content: space-between; }
+}
+
+@media (max-width: 29rem) {
+  .privacy-brand small { display: none; }
+  .privacy-back-link { max-width: 8.3rem; text-align: center; }
 }
 
 @media (min-width: 75rem) {

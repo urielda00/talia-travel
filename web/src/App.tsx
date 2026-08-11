@@ -1,5 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import './App.css'
+import PrivacyPolicy from './PrivacyPolicy'
+import heroVideo from '../../assets/video.mp4'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const phone = '972524398419'
@@ -50,7 +52,7 @@ function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: b
         <label htmlFor={`${idPrefix}-email`}><span>אימייל</span><input id={`${idPrefix}-email`} name="email" placeholder="אימייל" type="email" autoComplete="email" required /></label>
         <label htmlFor={`${idPrefix}-phone`}><span>מספר טלפון</span><input id={`${idPrefix}-phone`} name="phone" placeholder="מספר טלפון" type="tel" inputMode="tel" autoComplete="tel" required /></label>
       </div>
-      <label className="lead-form__consent"><input type="checkbox" required /> קראתי את מדיניות הפרטיות ואני מסכימה לשמירת הפרטים לצורך יצירת קשר</label>
+      <label className="lead-form__consent"><input type="checkbox" required /> <span>קראתי את <a href="/privacy">מדיניות הפרטיות</a> ואני מסכימה לשמירת הפרטים לצורך יצירת קשר</span></label>
       <button type="submit">חזרי אליי עם הפרטים <span aria-hidden="true">✈</span></button>
     </form>
   )
@@ -70,13 +72,18 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
 
 function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
+
+  if (isPrivacyPage) return <PrivacyPolicy />
 
   return (
     <div className="landing" dir="rtl">
       <a className="skip-link" href="#main">דלגי לתוכן</a>
       <main id="main">
         <section className="hero" aria-labelledby="hero-title">
-          <img className="hero__bg" src="/assets/mainImg.jpg" alt="חוף טרופי ומי טורקיז צלולים" fetchPriority="high" />
+          <video className="hero__bg" autoPlay muted loop playsInline poster="/assets/mainImg.jpg" aria-hidden="true">
+            <source src={heroVideo} type="video/mp4" />
+          </video>
           <div className="hero__overlay" />
           <div className="hero__panel">
             <img className="hero__logo" src={asset('logo')} alt="טליה Travel" />
@@ -209,7 +216,7 @@ function App() {
             <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="וואטסאפ"><SocialIcon platform="whatsapp" /></a>
           </nav>
         </div>
-        <div className="footer__bottom content-container"><nav aria-label="קישורים שימושיים"><a href="#package">פרטי החבילה</a><a href="#faq">שאלות נפוצות</a></nav><p>© 2026 טליה Travel · כל הזכויות שמורות</p></div>
+        <div className="footer__bottom content-container"><nav aria-label="קישורים שימושיים"><a href="#package">פרטי החבילה</a><a href="#faq">שאלות נפוצות</a><a href="/privacy">מדיניות פרטיות</a></nav><p>© 2026 טליה Travel · כל הזכויות שמורות</p></div>
       </footer>
       <a className="floating-whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="פתיחת שיחה בוואטסאפ">
         <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
