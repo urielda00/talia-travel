@@ -1,7 +1,6 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import './App.css'
 import PrivacyPolicy from './PrivacyPolicy'
-import { shorts } from './data/shorts'
 import { reviewScreenshots } from './data/reviews'
 import { getWhatsAppUrl } from './lib/format'
 import {
@@ -69,12 +68,18 @@ import {
   type AboutTripContent,
   type AboutTripDocument,
 } from './lib/aboutTrip'
+import {
+  resolveVideoTrip,
+  type ShortVideoSlot,
+  type VideoTripContent,
+  type VideoTripDocument,
+} from './lib/videoTrip'
 import type { SanityImage } from './types/sanity'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument & AboutTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument & AboutTripDocument & VideoTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -135,26 +140,6 @@ function getWhatsappMessage(destination: string): string {
   return `היי טליה, הגעתי מדף הנחיתה ורציתי לשמוע על הטיול ל${destination}`
 }
 
-function getYoutubeVideoId(youtubeUrl: string): string | null {
-  if (!youtubeUrl.trim()) return null
-
-  try {
-    const url = new URL(youtubeUrl)
-    const host = url.hostname.toLowerCase().replace(/^www\./, '')
-    let videoId: string | null = null
-
-    if (host === 'youtu.be') videoId = url.pathname.split('/').filter(Boolean)[0] ?? null
-    if (host === 'youtube.com' || host === 'm.youtube.com') {
-      if (url.pathname.startsWith('/shorts/')) videoId = url.pathname.split('/')[2] ?? null
-      if (url.pathname === '/watch') videoId = url.searchParams.get('v')
-    }
-
-    return videoId && /^[A-Za-z0-9_-]{11}$/.test(videoId) ? videoId : null
-  } catch {
-    return null
-  }
-}
-
 const previousTrips = [
   ['img1', 'טיול ג׳יפים במדבר'], ['img2', 'מסע חורף בלפלנד'], ['img3', 'סיור עירוני על גלגלים'],
   ['img4', 'חוף פראי בקפריסין'], ['img5', 'ערב סביב המדורה'], ['img6', 'שלג וצחוק בלפלנד'],
@@ -203,6 +188,55 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
   }
 
   return <svg className={`social-icon social-icon--${platform}`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">{paths[platform]}</svg>
+}
+
+function ShortVideoCard({ slot, index }: { slot: ShortVideoSlot; index: number }) {
+  const [videoFailed, setVideoFailed] = useState(false)
+  const [sanityFallbackFailed, setSanityFallbackFailed] = useState(false)
+
+  useEffect(() => {
+    setVideoFailed(false)
+    setSanityFallbackFailed(false)
+  }, [slot.videoUrl, slot.fallbackImage])
+
+  let sanityFallbackUrl: string | null = null
+  if (slot.fallbackImage?.asset) {
+    try {
+      const url = urlForImage(slot.fallbackImage).auto('format').url()
+      sanityFallbackUrl = /^https:\/\//.test(url) ? url : null
+    } catch {
+      sanityFallbackUrl = null
+    }
+  }
+
+  const fallbackImageUrl = sanityFallbackUrl && !sanityFallbackFailed
+    ? sanityFallbackUrl
+    : slot.localFallbackImage
+
+  return <article className="short-card"><div className="short-card__media">
+    {slot.videoUrl && !videoFailed ? (
+      <video
+        src={slot.videoUrl}
+        poster={fallbackImageUrl}
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-label={`סרטון מהטיול ${index + 1}`}
+        onError={() => setVideoFailed(true)}
+        onCanPlay={({ currentTarget }) => {
+          void currentTarget.play().catch(() => setVideoFailed(true))
+        }}
+      />
+    ) : (
+      <img
+        src={fallbackImageUrl}
+        alt={`תמונה מהטיול ${index + 1}`}
+        loading="lazy"
+        onError={() => setSanityFallbackFailed(true)}
+      />
+    )}
+  </div></article>
 }
 
 function ReviewCarousel() {
@@ -268,6 +302,7 @@ function App() {
   const [packageTrip, setPackageTrip] = useState<PackageTripContent>(FALLBACK_PACKAGE_TRIP)
   const [communityTrip, setCommunityTrip] = useState<CommunityTripContent>(FALLBACK_COMMUNITY_TRIP)
   const [aboutTrip, setAboutTrip] = useState<AboutTripContent>(FALLBACK_ABOUT_TRIP)
+  const [videoTrip, setVideoTrip] = useState<VideoTripContent>(() => resolveVideoTrip(null))
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -293,6 +328,7 @@ function App() {
           setPackageTrip(resolvePackageTrip(trip))
           setCommunityTrip(resolveCommunityTrip(trip))
           setAboutTrip(resolveAboutTrip(trip))
+          setVideoTrip(resolveVideoTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -444,13 +480,7 @@ function App() {
 
         <section className="shorts section" aria-labelledby="shorts-title">
           <div className="content-container"><h2 id="shorts-title" className="green-title">ככה זה נראה באמת</h2><div className="shorts__rail">
-            {shorts.map((short) => {
-              const videoId = getYoutubeVideoId(short.youtubeUrl)
-
-              return <article className="short-card" key={short.title}><div className="short-card__media">
-                {videoId ? <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${videoId}&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&rel=0&modestbranding=1`} title={`סרטון: ${short.title}`} allow="autoplay; encrypted-media" /> : <img src={short.fallbackImage} alt={short.title} loading="lazy" />}
-              </div></article>
-            })}
+            {videoTrip.map((slot, index) => <ShortVideoCard key={index} slot={slot} index={index} />)}
           </div></div>
         </section>
 
