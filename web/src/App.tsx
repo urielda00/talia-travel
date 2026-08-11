@@ -80,12 +80,18 @@ import {
   type TestimonialsTripContent,
   type TestimonialsTripDocument,
 } from './lib/testimonialsTrip'
+import {
+  FALLBACK_FAQ_TRIP,
+  resolveFaqTrip,
+  type FaqTripContent,
+  type FaqTripDocument,
+} from './lib/faqTrip'
 import type { SanityImage } from './types/sanity'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument & AboutTripDocument & VideoTripDocument & TestimonialsTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument & PackageTripDocument & CommunityTripDocument & AboutTripDocument & VideoTripDocument & TestimonialsTripDocument & FaqTripDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -163,14 +169,6 @@ const previousTrips = [
   ['img7', 'חוצות את החוג הארקטי'], ['img8', 'רגעים בבר הקרח'], ['img9', 'לילה בדובאי'],
   ['img10', 'שקיעה במדבר'], ['img11', 'יום רפטינג בגאורגיה'],
   ['img12', 'רגע מטיול של טליה'],
-]
-
-const faqs = [
-  ['האם אפשר להצטרף לטיול לבד?', 'בהחלט. רבים מצטרפים בלי להכיר מראש את שאר הקבוצה, וההיכרות מתחילה כבר לפני היציאה.'],
-  ['מה רמת הכשרות במהלך הטיול?', 'רמת הכשרות משתנה לפי היעד והמסלול. בכל טיול מפורט מראש אילו ארוחות כלולות ומהי רמת הכשרות הזמינה.'],
-  ['האם הטיסות וההעברות כלולות במחיר?', 'ההרכב משתנה בין הטיולים. כל הטיסות, ההעברות והשירותים הכלולים מפורטים בבירור בסעיף ״מה החבילה כוללת״.'],
-  ['מה רמת הקושי והקצב של הטיול?', 'לכל מסלול קצב ורמת מאמץ משלו. לפני ההרשמה נמסר מידע על הליכות, מדרגות, נסיעות וכל דרישה מיוחדת.'],
-  ['מה מדיניות הביטול והתשלום?', 'אפשרויות התשלום ותנאי הביטול נקבעים לכל טיול בנפרד ונמסרים בצורה מסודרת ושקופה לפני ההרשמה.'],
 ]
 
 function LeadForm({ idPrefix, whatsappBase, whatsappMessage, compact = false }: { idPrefix: string; whatsappBase: string; whatsappMessage: string; compact?: boolean }) {
@@ -329,6 +327,7 @@ function App() {
   const [aboutTrip, setAboutTrip] = useState<AboutTripContent>(FALLBACK_ABOUT_TRIP)
   const [videoTrip, setVideoTrip] = useState<VideoTripContent>(() => resolveVideoTrip(null))
   const [testimonialsTrip, setTestimonialsTrip] = useState<TestimonialsTripContent>(FALLBACK_TESTIMONIALS_TRIP)
+  const [faqTrip, setFaqTrip] = useState<FaqTripContent>(FALLBACK_FAQ_TRIP)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -356,6 +355,7 @@ function App() {
           setAboutTrip(resolveAboutTrip(trip))
           setVideoTrip(resolveVideoTrip(trip))
           setTestimonialsTrip(resolveTestimonialsTrip(trip))
+          setFaqTrip(resolveFaqTrip(trip))
         }
       })
       .catch(() => undefined)
@@ -534,7 +534,7 @@ function App() {
 
         <section className="faq section" id="faq" aria-labelledby="faq-title">
           <div className="faq__inner content-container"><p className="section-eyebrow">כל מה שחשוב לדעת</p><h2 id="faq-title" className="green-title">שאלות נפוצות</h2><p className="faq__intro">ריכזנו תשובות קצרות לשאלות שעולות לפני שמצטרפים. הפרטים המדויקים מופיעים תמיד בעמוד של כל טיול.</p><div className="accordion">
-            {faqs.map(([question, answer], index) => { const open = openFaq === index; return <article key={question}><h3><button type="button" aria-expanded={open} aria-controls={`faq-${index}`} onClick={() => setOpenFaq(open ? null : index)}><span>{question}</span><svg className="accordion__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" /></svg></button></h3><div id={`faq-${index}`} hidden={!open}><p>{answer}</p></div></article> })}
+            {faqTrip.map(({ id, question, answer }, index) => { const open = openFaq === index; return <article key={id}><h3><button type="button" aria-expanded={open} aria-controls={`faq-${index}`} onClick={() => setOpenFaq(open ? null : index)}><span>{question}</span><svg className="accordion__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" /></svg></button></h3><div id={`faq-${index}`} hidden={!open}><p>{answer}</p></div></article> })}
           </div></div>
         </section>
 

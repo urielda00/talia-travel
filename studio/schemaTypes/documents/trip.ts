@@ -61,6 +61,10 @@ export const trip = defineType({
       name: 'testimonials',
       title: 'המלצות מטיילים',
     },
+    {
+      name: 'faq',
+      title: 'שאלות נפוצות',
+    },
   ],
   fieldsets: [
     {
@@ -75,6 +79,11 @@ export const trip = defineType({
     {name: 'testimonialOne', title: 'המלצה 1', options: {collapsible: true}},
     {name: 'testimonialTwo', title: 'המלצה 2', options: {collapsible: true}},
     {name: 'testimonialThree', title: 'המלצה 3', options: {collapsible: true}},
+    {name: 'faqOne', title: 'שאלה 1', options: {collapsible: true}},
+    {name: 'faqTwo', title: 'שאלה 2', options: {collapsible: true}},
+    {name: 'faqThree', title: 'שאלה 3', options: {collapsible: true}},
+    {name: 'faqFour', title: 'שאלה 4', options: {collapsible: true}},
+    {name: 'faqFive', title: 'שאלה 5', options: {collapsible: true}},
     {
       name: 'reviewScreenshots',
       title: 'צילומי המלצות',
@@ -157,6 +166,32 @@ export const trip = defineType({
       type: 'boolean',
       group: 'hero',
       initialValue: false,
+      validation: (rule) =>
+        rule.custom(async (showOnWebsite, context) => {
+          if (!showOnWebsite) return true
+
+          const documentId = context.document?._id
+          if (!documentId) return true
+
+          const publishedId = documentId.replace(/^drafts\./, '')
+          const draftId = `drafts.${publishedId}`
+          const client = context
+            .getClient({apiVersion: '2026-08-11'})
+            .withConfig({perspective: 'raw'})
+          const anotherVisibleTripExists = await client.fetch<boolean>(
+            `defined(*[
+              _type == "trip" &&
+              showOnWebsite == true &&
+              !(_id in [$publishedId, $draftId])
+            ][0]._id)`,
+            {publishedId, draftId},
+          )
+
+          return (
+            !anotherVisibleTripExists ||
+            'כבר קיים טיול אחר שמוגדר להצגה באתר. יש לבטל בו קודם את "להציג את הטיול באתר".'
+          )
+        }),
     }),
     defineField({
       name: 'storyEyebrow',
@@ -1055,6 +1090,151 @@ export const trip = defineType({
       validation: (rule) => [
         rule.required().error('יש להזין תיאור קצר'),
         rule.max(50).error('התיאור הקצר יכול להכיל עד 50 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqOneQuestion',
+      title: 'שאלה',
+      type: 'string',
+      group: 'faq',
+      fieldset: 'faqOne',
+      validation: (rule) => [
+        rule.required().error('יש להזין שאלה'),
+        rule.max(90).error('השאלה יכולה להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqOneAnswer',
+      title: 'תשובה',
+      type: 'text',
+      rows: 4,
+      group: 'faq',
+      fieldset: 'faqOne',
+      validation: (rule) => [
+        rule.required().error('יש להזין תשובה'),
+        rule.max(280).error('התשובה יכולה להכיל עד 280 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqTwoQuestion',
+      title: 'שאלה',
+      type: 'string',
+      group: 'faq',
+      fieldset: 'faqTwo',
+      validation: (rule) => [
+        rule.required().error('יש להזין שאלה'),
+        rule.max(90).error('השאלה יכולה להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqTwoAnswer',
+      title: 'תשובה',
+      type: 'text',
+      rows: 4,
+      group: 'faq',
+      fieldset: 'faqTwo',
+      validation: (rule) => [
+        rule.required().error('יש להזין תשובה'),
+        rule.max(280).error('התשובה יכולה להכיל עד 280 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqThreeQuestion',
+      title: 'שאלה',
+      type: 'string',
+      group: 'faq',
+      fieldset: 'faqThree',
+      validation: (rule) => [
+        rule.required().error('יש להזין שאלה'),
+        rule.max(90).error('השאלה יכולה להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqThreeAnswer',
+      title: 'תשובה',
+      type: 'text',
+      rows: 4,
+      group: 'faq',
+      fieldset: 'faqThree',
+      validation: (rule) => [
+        rule.required().error('יש להזין תשובה'),
+        rule.max(280).error('התשובה יכולה להכיל עד 280 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqFourQuestion',
+      title: 'שאלה',
+      type: 'string',
+      group: 'faq',
+      fieldset: 'faqFour',
+      validation: (rule) => [
+        rule.required().error('יש להזין שאלה'),
+        rule.max(90).error('השאלה יכולה להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqFourAnswer',
+      title: 'תשובה',
+      type: 'text',
+      rows: 4,
+      group: 'faq',
+      fieldset: 'faqFour',
+      validation: (rule) => [
+        rule.required().error('יש להזין תשובה'),
+        rule.max(280).error('התשובה יכולה להכיל עד 280 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqFiveQuestion',
+      title: 'שאלה',
+      type: 'string',
+      group: 'faq',
+      fieldset: 'faqFive',
+      validation: (rule) => [
+        rule.required().error('יש להזין שאלה'),
+        rule.max(90).error('השאלה יכולה להכיל עד 90 תווים'),
+        rule.custom((value) =>
+          typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
+        ),
+      ],
+    }),
+    defineField({
+      name: 'faqFiveAnswer',
+      title: 'תשובה',
+      type: 'text',
+      rows: 4,
+      group: 'faq',
+      fieldset: 'faqFive',
+      validation: (rule) => [
+        rule.required().error('יש להזין תשובה'),
+        rule.max(280).error('התשובה יכולה להכיל עד 280 תווים'),
         rule.custom((value) =>
           typeof value === 'string' && value.trim().length === 0 ? 'לא ניתן להזין רווחים בלבד' : true,
         ),
