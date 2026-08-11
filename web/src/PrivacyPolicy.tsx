@@ -56,13 +56,13 @@ function PrivacyPolicy() {
     <div className="privacy-page" dir="rtl">
       <a className="skip-link" href="#privacy-main">דלגי לתוכן</a>
 
-      <header className="privacy-header">
+      <header className="privacy-header privacy-brand-strip">
         <div className="privacy-header__inner content-container">
-          <a className="privacy-brand" href="/" aria-label="Talia Dahan Travel — חזרה לעמוד הראשי">
+          <a className="footer__brand" href="/" aria-label="טליה דהן - טיולי בוטיק — חזרה לעמוד הראשי">
             <img src="/assets/logo.jpeg" alt="" />
-            <span><strong>Talia Dahan Travel</strong><small>מסעות בוטיק בקבוצה</small></span>
+            <span><strong>טליה דהן - טיולי בוטיק</strong><small>טיולים וחוויות לדתיים ולמסורתיים</small></span>
           </a>
-          <a className="privacy-back-link" href="/"><span aria-hidden="true">←</span> חזרה לעמוד הטיול</a>
+          <a className="privacy-back-link privacy-back-link--light" href="/"><span aria-hidden="true">←</span> חזרה לעמוד הטיול</a>
         </div>
       </header>
 
