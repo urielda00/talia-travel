@@ -29,6 +29,10 @@ export const trip = defineType({
       name: 'persuasion',
       title: 'הזמנה להצטרף',
     },
+    {
+      name: 'benefits',
+      title: 'יתרונות הטיול',
+    },
   ],
   fields: [
     defineField({
@@ -312,6 +316,123 @@ export const trip = defineType({
       type: 'image',
       group: 'persuasion',
       validation: (rule) => rule.required().error('יש לבחור תמונה 4'),
+    }),
+    defineField({
+      name: 'benefitCardOne',
+      title: 'כרטיס 1',
+      description: 'התוכן של הכרטיס הראשון באזור יתרונות הטיול.',
+      type: 'object',
+      group: 'benefits',
+      validation: (rule) => rule.required().error('יש למלא את כרטיס 1'),
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'כרטיס 1 - כותרת',
+          type: 'string',
+          validation: (rule) => [
+            rule.required().error('יש להזין כותרת לכרטיס 1'),
+            rule.max(25).error('הכותרת יכולה להכיל עד 25 תווים'),
+            rule.custom((value) =>
+              typeof value === 'string' && value.trim().length === 0
+                ? 'לא ניתן להזין רווחים בלבד'
+                : true,
+            ),
+          ],
+        }),
+        defineField({
+          name: 'text',
+          title: 'כרטיס 1 - טקסט',
+          type: 'text',
+          rows: 3,
+          validation: (rule) => [
+            rule.required().error('יש להזין טקסט לכרטיס 1'),
+            rule.max(80).error('הטקסט יכול להכיל עד 80 תווים'),
+            rule.custom((value) =>
+              typeof value === 'string' && value.trim().length === 0
+                ? 'לא ניתן להזין רווחים בלבד'
+                : true,
+            ),
+          ],
+        }),
+      ],
+    }),
+    defineField({
+      name: 'benefitCardTwo',
+      title: 'כרטיס 2',
+      description: 'התוכן של הכרטיס השני באזור יתרונות הטיול.',
+      type: 'object',
+      group: 'benefits',
+      validation: (rule) => rule.required().error('יש למלא את כרטיס 2'),
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'כרטיס 2 - כותרת',
+          type: 'string',
+          validation: (rule) => [
+            rule.required().error('יש להזין כותרת לכרטיס 2'),
+            rule.max(25).error('הכותרת יכולה להכיל עד 25 תווים'),
+            rule.custom((value) =>
+              typeof value === 'string' && value.trim().length === 0
+                ? 'לא ניתן להזין רווחים בלבד'
+                : true,
+            ),
+          ],
+        }),
+        defineField({
+          name: 'text',
+          title: 'כרטיס 2 - טקסט',
+          type: 'text',
+          rows: 3,
+          validation: (rule) => [
+            rule.required().error('יש להזין טקסט לכרטיס 2'),
+            rule.max(80).error('הטקסט יכול להכיל עד 80 תווים'),
+            rule.custom((value) =>
+              typeof value === 'string' && value.trim().length === 0
+                ? 'לא ניתן להזין רווחים בלבד'
+                : true,
+            ),
+          ],
+        }),
+      ],
+    }),
+    defineField({
+      name: 'benefitCardThree',
+      title: 'כרטיס 3',
+      description: 'התוכן של הכרטיס השלישי באזור יתרונות הטיול.',
+      type: 'object',
+      group: 'benefits',
+      validation: (rule) => rule.required().error('יש למלא את כרטיס 3'),
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'כרטיס 3 - כותרת',
+          type: 'string',
+          validation: (rule) => [
+            rule.required().error('יש להזין כותרת לכרטיס 3'),
+            rule.max(25).error('הכותרת יכולה להכיל עד 25 תווים'),
+            rule.custom((value) =>
+              typeof value === 'string' && value.trim().length === 0
+                ? 'לא ניתן להזין רווחים בלבד'
+                : true,
+            ),
+          ],
+        }),
+        defineField({
+          name: 'text',
+          title: 'כרטיס 3 - טקסט',
+          type: 'text',
+          rows: 3,
+          validation: (rule) => [
+            rule.required().error('יש להזין טקסט לכרטיס 3'),
+            rule.max(80).error('הטקסט יכול להכיל עד 80 תווים'),
+            rule.custom((value) =>
+              typeof value === 'string' && value.trim().length === 0
+                ? 'לא ניתן להזין רווחים בלבד'
+                : true,
+            ),
+          ],
+        }),
+      ],
     }),
   ],
   preview: {
