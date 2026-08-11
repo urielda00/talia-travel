@@ -92,22 +92,28 @@ Stack:
 - Vite
 - TypeScript
 
+The current task is to build a new standalone landing page from scratch.
+
 Frontend priorities:
 
-- premium visual quality
-- boutique travel/editorial feel
+- exceptional UI/UX quality
+- premium boutique travel aesthetic
 - mobile-first
-- excellent responsive behavior
-- semantic HTML
+- fully responsive
+- rich photography
+- strong visual storytelling
+- elegant Hebrew RTL typography
+- custom layout and composition
 - accessibility
 - fast loading
-- maintainable component structure
+- maintainable React components
+
+Do not use the existing page as the visual foundation.
+
+It is acceptable to replace or rewrite existing frontend components and styles when necessary.
 
 Do not introduce a heavy UI framework.
-
-Do not recreate the frontend project.
-
-Prefer custom React components and CSS using the existing project structure.
+Prefer React, TypeScript and custom CSS.
 
 ## Design direction
 
