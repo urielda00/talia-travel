@@ -1,9 +1,12 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, type ReactNode } from 'react'
 import './App.css'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const phone = '972524398419'
 const whatsappBase = `https://wa.me/${phone}`
+const tripName = 'דובאי ואבו דאבי'
+const whatsappMessage = `היי טליה, הגעתי מדף הנחיתה ורציתי לשמוע על הטיול ל${tripName}`
+const whatsappUrl = `${whatsappBase}?text=${encodeURIComponent(whatsappMessage)}`
 
 const previousTrips = [
   ['img1', 'טיול ג׳יפים במדבר'], ['img2', 'מסע חורף בלפלנד'], ['img3', 'סיור עירוני על גלגלים'],
@@ -35,7 +38,7 @@ function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: b
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    const message = `היי טליה, אשמח לקבל פרטים על מסע דובאי ואבו דאבי.\nשם: ${data.get('name')} ${data.get('lastName')}\nטלפון: ${data.get('phone')}\nאימייל: ${data.get('email')}`
+    const message = `${whatsappMessage}\nשם: ${data.get('name')} ${data.get('lastName')}\nטלפון: ${data.get('phone')}\nאימייל: ${data.get('email')}`
     window.open(`${whatsappBase}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
   }
 
@@ -53,6 +56,18 @@ function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: b
   )
 }
 
+type SocialPlatform = 'instagram' | 'facebook' | 'whatsapp'
+
+function SocialIcon({ platform }: { platform: SocialPlatform }) {
+  const paths: Record<SocialPlatform, ReactNode> = {
+    instagram: <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.25" /><circle cx="17.4" cy="6.6" r="1" className="social-icon__dot" /></>,
+    facebook: <path d="M14.2 21v-8h2.8l.42-3.2H14.2V7.75c0-.93.26-1.56 1.62-1.56h1.73V3.33a23.4 23.4 0 0 0-2.52-.13c-2.5 0-4.2 1.52-4.2 4.32V9.8H8v3.2h2.83v8h3.37Z" />,
+    whatsapp: <><path d="M12.03 3a8.82 8.82 0 0 0-7.65 13.2L3.2 20.8l4.72-1.24A8.82 8.82 0 1 0 12.03 3Z" /><path d="M9.22 7.42c-.2-.45-.4-.46-.59-.47h-.5c-.18 0-.46.07-.7.33-.24.27-.92.9-.92 2.2s.95 2.55 1.08 2.73c.13.17 1.86 2.84 4.52 3.99 2.2.95 2.66.76 3.14.71.48-.04 1.56-.63 1.78-1.25.22-.61.22-1.14.15-1.25-.06-.1-.24-.17-.5-.3l-1.8-.84c-.24-.09-.42-.13-.6.13-.17.26-.68.84-.83 1.01-.15.18-.3.2-.56.07-.26-.13-1.1-.4-2.08-1.29a7.8 7.8 0 0 1-1.45-1.81c-.15-.27-.02-.4.12-.54.11-.11.26-.3.39-.46.13-.15.17-.26.26-.43.08-.18.04-.33-.03-.46l-.79-1.94Z" className="social-icon__phone" /></>,
+  }
+
+  return <svg className={`social-icon social-icon--${platform}`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">{paths[platform]}</svg>
+}
+
 function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
@@ -64,8 +79,8 @@ function App() {
           <img className="hero__bg" src="/assets/mainImg.jpg" alt="חוף טרופי ומי טורקיז צלולים" fetchPriority="high" />
           <div className="hero__overlay" />
           <div className="hero__panel">
-            <img className="hero__logo" src={asset('logo')} alt="טליה זהור Travel" />
-            <p className="hero__eyebrow">מסע בוטיק לדובאי ואבו דאבי</p>
+            <img className="hero__logo" src={asset('logo')} alt="טליה Travel" />
+            <p className="hero__eyebrow">מסע בוטיק ל{tripName}</p>
             <h1 id="hero-title">איחוד האמירויות</h1>
             <p className="hero__headline">חופשה אחרת. <span>צבעונית, מפנקת ומלאה ברגעים שלא שוכחים.</span></p>
             <p className="hero__subtitle">מסע חווייתי בקבוצה קטנה, בין העיר, המדבר, קולינריה, תרבות ואטרקציות שנבחרו בקפידה.</p>
@@ -82,8 +97,9 @@ function App() {
             <div className="story__copy">
               <p className="section-eyebrow">הסיפור של המסע</p>
               <h2 id="story-title">שתי ערים.<br /><em>עולם שלם של ניגודים.</em></h2>
-              <p className="story__lead">דובאי ואבו דאבי הן הרבה יותר ממגדלים נוצצים. זהו מפגש מסקרן בין מסורת לעתיד, בין שווקים ריחניים למסעדות מעולות, ובין ים כחול לשקט הגדול של המדבר.</p>
-              <p>יצרתי עבורך מסע שבו כל פרט כבר מחכה: טיסות נוחות, מלונות ברמה גבוהה, מסלול עשיר שאינו עמוס, קבוצה קטנה וליווי אישי — מהשיחה הראשונה ועד החזרה הביתה.</p>
+              <p className="story__accent">כאן הניגודים הופכים לחוויה</p>
+              <p className="story__lead">דובאי ואבו דאבי הן הרבה יותר ממגדלים נוצצים. זהו מפגש מסקרן בין מסורת לעתיד, בין שווקים ריחניים למסעדות מעולות ובין ים כחול לשקט הגדול של המדבר.</p>
+              <p>יצרתי עבורך מסע שבו כל פרט כבר מתוכנן: טיסות נוחות, מלונות ברמה גבוהה, מסלול עשיר שאינו עמוס, קבוצה קטנה וליווי אישי — מהשיחה הראשונה ועד החזרה הביתה.</p>
               <p>נצא לגלות מקומות מפתיעים, נאכל טוב, נצטלם, נצחק ונעצור לקפה מול הנוף. לצד כל החוויות, יישאר גם זמן <strong>פשוט להיות בחופשה.</strong></p>
               <p className="story__promise">אם הגיע הזמן לעצור הכול ולתת לעצמך כמה ימים של חופש אמיתי — המסע הזה נוצר בשבילך.</p>
             </div>
@@ -153,7 +169,7 @@ function App() {
 
         <section className="about section section--white" aria-labelledby="about-title">
           <div className="split-card split-card--about content-container">
-            <div className="split-card__image"><img src={asset('aboutMe')} alt="טליה זהור ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
+            <div className="split-card__image"><img src={asset('aboutMe')} alt="טליה Travel ליד מלון בורג׳ אל ערב" loading="lazy" /></div>
             <div className="split-card__copy"><p className="section-eyebrow">מי שמאחורי כל פרט</p><h2 id="about-title" className="green-title">נעים מאוד, אני טליה</h2><p className="about__lead">אני מאמינה שטיול טוב מתחיל הרבה לפני שעולים למטוס.</p><p>אחרי שנים של טיולים והפקות, הדבר שהכי מרגש אותי הוא ליצור מסעות שבהם מרגישים שמישהו באמת חשב על האנשים, על הקצב ועל כל הפרטים הקטנים.</p><p>אני בוחרת בקפידה את המסלול, מקומות האירוח והחוויות, מכינה את הקבוצה לקראת היציאה ונשארת מעורבת לאורך הדרך. חשוב לי שכל אחת ואחד ירגישו בטוחים, רצויים ופנויים פשוט ליהנות.</p><p className="about__signature"><strong>אני מזמינה אותך להצטרף למסע שמתוכנן במקצועיות ומרגיש אישי מהרגע הראשון.</strong></p><a className="primary-button" href="/#package">טליה, אני רוצה להצטרף <span aria-hidden="true">✈</span></a></div>
           </div>
         </section>
@@ -172,19 +188,30 @@ function App() {
           </div></div>
         </section>
 
-        <section className="faq section section--white" aria-labelledby="faq-title">
+        <section className="faq section" id="faq" aria-labelledby="faq-title">
           <div className="faq__inner content-container"><p className="section-eyebrow">כל מה שחשוב לדעת</p><h2 id="faq-title" className="green-title">שאלות נפוצות</h2><p className="faq__intro">ריכזנו תשובות קצרות לשאלות שעולות לפני שמצטרפים. הפרטים המדויקים מופיעים תמיד בעמוד של כל טיול.</p><div className="accordion">
             {faqs.map(([question, answer], index) => { const open = openFaq === index; return <article key={question}><h3><button type="button" aria-expanded={open} aria-controls={`faq-${index}`} onClick={() => setOpenFaq(open ? null : index)}><span>{question}</span><i aria-hidden="true">⌄</i></button></h3><div id={`faq-${index}`} hidden={!open}><p>{answer}</p></div></article> })}
           </div></div>
         </section>
 
-        <section className="final-register section section--white">
-          <div className="final-register__box content-container"><h2>רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של 5,490₪ בלבד!</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע ונבדוק יחד התאמה לטיול.</p><LeadForm idPrefix="final" compact /></div>
+        <section className="final-register section" aria-labelledby="final-register-title">
+          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של 5,490₪ בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" compact /></div>
         </section>
       </main>
 
-      <footer className="footer"><div className="footer__social"><a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">◎</a><a href={whatsappBase} target="_blank" rel="noreferrer" aria-label="WhatsApp">◉</a><a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">f</a></div><img src={asset('logo')} alt="טליה זהור Travel" /><p>© 2026 טליה זהור Travel · כל הזכויות שמורות</p></footer>
-      <a className="floating-whatsapp" href={whatsappBase} target="_blank" rel="noreferrer" aria-label="פתיחת שיחה בוואטסאפ">
+      <footer className="footer">
+        <div className="footer__inner content-container">
+          <a className="footer__brand" href="#main" aria-label="טליה Travel — חזרה לראש העמוד"><img src={asset('logo')} alt="" /><span><strong>טליה Travel</strong></span></a>
+          <div className="footer__connect"><p>בואי להכיר, לשאול ולהתחיל לתכנן את המסע הבא.</p><a className="footer__whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer"><SocialIcon platform="whatsapp" />דברי איתי בוואטסאפ</a></div>
+          <nav className="footer__social" aria-label="טליה Travel ברשתות החברתיות">
+            <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="אינסטגרם"><SocialIcon platform="instagram" /></a>
+            <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="פייסבוק"><SocialIcon platform="facebook" /></a>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="וואטסאפ"><SocialIcon platform="whatsapp" /></a>
+          </nav>
+        </div>
+        <div className="footer__bottom content-container"><nav aria-label="קישורים שימושיים"><a href="#package">פרטי החבילה</a><a href="#faq">שאלות נפוצות</a></nav><p>© 2026 טליה Travel · כל הזכויות שמורות</p></div>
+      </footer>
+      <a className="floating-whatsapp" href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="פתיחת שיחה בוואטסאפ">
         <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
           <path fill="currentColor" d="M19.11 17.27c-.25-.13-1.48-.73-1.71-.81-.23-.08-.4-.13-.57.13-.17.25-.65.81-.8.98-.15.17-.3.19-.55.06a6.83 6.83 0 0 1-2.01-1.24 7.54 7.54 0 0 1-1.39-1.73c-.15-.25-.02-.39.11-.52.11-.11.25-.3.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.38-.78-1.89-.2-.49-.41-.42-.57-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.43 1.03 2.6.13.17 1.77 2.7 4.28 3.79.6.26 1.07.42 1.44.54.61.19 1.17.16 1.61.1.49-.07 1.48-.6 1.69-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29Z" />
           <path fill="currentColor" d="M16.02 4.5a11.4 11.4 0 0 0-9.7 17.4L5 27l5.25-1.37A11.4 11.4 0 1 0 16.02 4.5Zm0 20.77c-1.83 0-3.62-.49-5.18-1.42l-.37-.22-3.12.82.84-3.04-.24-.39a9.67 9.67 0 1 1 8.07 4.25Z" />
