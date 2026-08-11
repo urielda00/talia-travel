@@ -44,11 +44,18 @@ import {
   type StoryTripContent,
   type StoryTripDocument,
 } from './lib/storyTrip'
+import {
+  FALLBACK_PREVIOUS_TRIPS_GALLERY,
+  resolvePreviousTripsGallery,
+  type PreviousTripsGalleryContent,
+  type PreviousTripsGalleryDocument,
+} from './lib/previousTripsGallery'
+import type { SanityImage } from './types/sanity'
 
 const asset = (name: string) => `/assets/${name}.jpeg`
 const heroVideo = '/media/video.mp4'
 
-type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument
+type ActiveTripDocument = HeroTripDocument & StoryTripDocument & PersuasionTripDocument & BenefitTripDocument & AwaitsTripDocument & PreviousTripsGalleryDocument
 
 function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: string): string {
   if (!image?.asset) return fallback
@@ -62,6 +69,17 @@ function getStoryImageUrl(image: StoryTripContent['storyMainImage'], fallback: s
 }
 
 function getPersuasionImageUrl(image: PersuasionTripContent['persuasionImageOne'], fallback: string): string {
+  if (!image?.asset) return fallback
+
+  try {
+    const url = urlForImage(image).auto('format').url()
+    return /^https:\/\//.test(url) ? url : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function getPreviousTripsGalleryImageUrl(image: SanityImage | null, fallback: string): string {
   if (!image?.asset) return fallback
 
   try {
@@ -216,6 +234,7 @@ function App() {
   const [persuasionTrip, setPersuasionTrip] = useState<PersuasionTripContent>(FALLBACK_PERSUASION_TRIP)
   const [benefitTrip, setBenefitTrip] = useState<BenefitTripContent>(FALLBACK_BENEFIT_TRIP)
   const [awaitsTrip, setAwaitsTrip] = useState<AwaitsTripContent>(FALLBACK_AWAITS_TRIP)
+  const [previousTripsGallery, setPreviousTripsGallery] = useState<PreviousTripsGalleryContent>(FALLBACK_PREVIOUS_TRIPS_GALLERY)
   const isPrivacyPage = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
   useEffect(() => {
@@ -237,6 +256,7 @@ function App() {
           setPersuasionTrip(resolvePersuasionTrip(trip))
           setBenefitTrip(resolveBenefitTrip(trip))
           setAwaitsTrip(resolveAwaitsTrip(trip))
+          setPreviousTripsGallery(resolvePreviousTripsGallery(trip))
         }
       })
       .catch(() => undefined)
@@ -260,6 +280,7 @@ function App() {
     [persuasionTrip.persuasionImageThree, 'img9'],
     [persuasionTrip.persuasionImageFour, 'img11'],
   ] as const
+  const previousTripsGalleryImages = previousTrips.map(([name], index) => getPreviousTripsGalleryImageUrl(previousTripsGallery[index], asset(name)))
 
   if (isPrivacyPage) return <PrivacyPolicy whatsappUrl={whatsappBase} whatsappNumber={siteSettings.whatsappNumber} />
 
@@ -343,7 +364,7 @@ function App() {
           <h2 id="trips-title" className="green-title">רגעים קטנים מהטיולים הקודמים שלנו</h2>
           <img className="section-brand-mark section-brand-mark--gallery" src={asset('logo')} alt="" aria-hidden="true" />
           <div className="trips-gallery__grid">
-            {previousTrips.map(([name, alt], index) => <figure className={`trip-photo trip-photo--${index + 1}`} key={name}><img src={asset(name)} alt={alt} loading="lazy" /></figure>)}
+            {previousTrips.map(([name, alt], index) => <figure className={`trip-photo trip-photo--${index + 1}`} key={name}><img src={previousTripsGalleryImages[index]} alt={alt} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = asset(name) }} /></figure>)}
           </div>
         </section>
 

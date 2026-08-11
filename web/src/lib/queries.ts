@@ -79,7 +79,19 @@ export const HERO_TRIP_QUERY = defineQuery(/* groq */ `
     awaitsItemFour,
     awaitsItemFive,
     awaitsItemSix,
-    awaitsItemSeven
+    awaitsItemSeven,
+    previousTripsGalleryImageOne { asset },
+    previousTripsGalleryImageTwo { asset },
+    previousTripsGalleryImageThree { asset },
+    previousTripsGalleryImageFour { asset },
+    previousTripsGalleryImageFive { asset },
+    previousTripsGalleryImageSix { asset },
+    previousTripsGalleryImageSeven { asset },
+    previousTripsGalleryImageEight { asset },
+    previousTripsGalleryImageNine { asset },
+    previousTripsGalleryImageTen { asset },
+    previousTripsGalleryImageEleven { asset },
+    previousTripsGalleryImageTwelve { asset }
   }
 `)
 
