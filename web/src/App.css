@@ -131,11 +131,14 @@
 .lead-form label:not(.lead-form__consent) span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .lead-form input:not([type='checkbox']) { width: 100%; height: 2.75rem; padding: .45rem .8rem; border: 1px solid var(--color-border); border-radius: var(--radius-control); background: var(--color-white); color: var(--color-text); transition: border-color 180ms ease, box-shadow 180ms ease; }
 .lead-form input::placeholder { color: var(--color-text-muted); }
+.lead-form__phone { direction: ltr; text-align: right; }
 .lead-form__consent { display: flex; gap: .4rem; align-items: flex-start; justify-content: center; margin-block: .65rem; font-size: .72rem; }
 .lead-form__consent input { margin-top: .25rem; }
 .lead-form__consent a { color: inherit; font-weight: 700; text-underline-offset: .16rem; }
 .lead-form button { width: 100%; min-height: 2.8rem; border: 1px solid transparent; border-radius: var(--radius-control); background: var(--color-blue); box-shadow: 0 .45rem 1rem rgb(23 59 109 / 14%); color: var(--color-white); cursor: pointer; font-size: .96rem; font-weight: 700; line-height: 1.35; transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
 .lead-form button:hover { border-color: var(--color-gold); background: var(--color-blue-deep); box-shadow: 0 .6rem 1.25rem rgb(16 42 77 / 18%); transform: translateY(-1px); }
+.lead-form__success { display: flex; gap: .65rem; align-items: center; justify-content: center; margin: .85rem 0 0; padding: .85rem 1rem; border: 1px solid rgb(47 125 85 / 42%); border-radius: var(--radius-control); background: #EDF7F1; box-shadow: 0 .45rem 1.1rem rgb(47 125 85 / 10%); color: #205F40; font-size: 1rem; font-weight: 800; line-height: 1.5; text-align: center; }
+.lead-form__success::before { display: grid; width: 1.55rem; height: 1.55rem; flex: 0 0 1.55rem; place-items: center; border-radius: 50%; background: #2F7D55; color: var(--color-white); content: '✓'; font-size: .95rem; font-weight: 800; line-height: 1; }
 .package .lead-form input:not([type='checkbox']) { border-color: rgb(23 59 109 / 24%); background: rgb(255 255 255 / 94%); }
 .package .lead-form input:not([type='checkbox']):focus { border-color: var(--color-blue); box-shadow: 0 0 0 3px rgb(23 59 109 / 14%); outline: 0; }
 .package__fineprint { max-width: 48rem; margin: 1rem auto 0; font-size: .66rem; font-style: italic; line-height: 1.45; }

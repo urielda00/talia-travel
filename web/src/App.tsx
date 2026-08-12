@@ -181,17 +181,14 @@ function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: b
     const data = new FormData(form)
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
     const firstName = String(data.get('name') ?? '')
-    const formArea = idPrefix === 'main' ? 'טופס הרשמה ראשי' : 'טופס הרשמה תחתון'
     const submission = new FormData()
 
-    submission.append('שם פרטי', firstName)
-    submission.append('שם משפחה', String(data.get('lastName') ?? ''))
-    submission.append('אימייל', String(data.get('email') ?? ''))
-    submission.append('טלפון', String(data.get('phone') ?? ''))
-    submission.append('אזור הטופס', formArea)
-    submission.append('אישור מדיניות פרטיות', 'אושר')
+    submission.append('first_name', firstName)
+    submission.append('last_name', String(data.get('lastName') ?? ''))
+    submission.append('email', String(data.get('email') ?? ''))
+    submission.append('phone', String(data.get('phone') ?? ''))
     submission.append('access_key', accessKey)
-    submission.append('subject', `פנייה חדשה באתר Talia Travels - ${firstName}`)
+    submission.append('subject', 'פנייה חדשה באתר Talia Travels')
 
     try {
       if (!accessKey) throw new Error('VITE_WEB3FORMS_ACCESS_KEY is not configured')
@@ -223,11 +220,11 @@ function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: b
         <label htmlFor={`${idPrefix}-name`}><span>שם פרטי</span><input id={`${idPrefix}-name`} name="name" placeholder="שם פרטי" autoComplete="given-name" required /></label>
         <label htmlFor={`${idPrefix}-last`}><span>שם משפחה</span><input id={`${idPrefix}-last`} name="lastName" placeholder="שם משפחה" autoComplete="family-name" required /></label>
         <label htmlFor={`${idPrefix}-email`}><span>אימייל</span><input id={`${idPrefix}-email`} name="email" placeholder="אימייל" type="email" autoComplete="email" required /></label>
-        <label htmlFor={`${idPrefix}-phone`}><span>מספר טלפון</span><input id={`${idPrefix}-phone`} name="phone" placeholder="מספר טלפון" type="tel" inputMode="tel" autoComplete="tel" required /></label>
+        <label htmlFor={`${idPrefix}-phone`}><span>מספר טלפון</span><input className="lead-form__phone" id={`${idPrefix}-phone`} name="phone" placeholder="מספר טלפון" type="tel" inputMode="tel" autoComplete="tel" required /></label>
       </div>
-      <label className="lead-form__consent"><input type="checkbox" name="privacyConsent" value="accepted" required /> <span>קראתי את <a href="/privacy">מדיניות הפרטיות</a> ואני מסכימה לשמירת הפרטים לצורך יצירת קשר</span></label>
-      <button type="submit">חזרי אליי עם הפרטים <span aria-hidden="true">✈</span></button>
-      {submitted && <p role="status">הפרטים התקבלו בהצלחה, נחזור אלייך בהקדם</p>}
+      <label className="lead-form__consent"><input type="checkbox" name="privacyConsent" value="accepted" required /> <span>קראנו את <a href="/privacy">מדיניות הפרטיות</a> ואנו מסכימים לשמירת הפרטים לצורך יצירת קשר</span></label>
+      <button type="submit">שלחו לנו את הפרטים <span aria-hidden="true">✈</span></button>
+      {submitted && <p className="lead-form__success" role="status">הפרטים התקבלו בהצלחה! נחזור אליכם בהקדם</p>}
     </form>
   )
 }
@@ -620,7 +617,7 @@ function App() {
             <h2 className="green-title">מה החבילה כוללת?</h2>
             <div className="package__checks">{packageTrip.items.map((item, index) => <p key={index}><span aria-hidden="true">✓</span>{item}</p>)}</div>
             <div className="package__price"><p>כל החופשה במחיר מיוחד של</p><strong>{tripPrice}</strong><span>לאדם בחדר זוגי</span><small>ניתן לשלם בהעברה בנקאית או עד 10 תשלומים בכרטיס אשראי</small></div>
-            <div className="register-copy" id="register"><strong>רוצה להצטרף?</strong><p>השאירי פרטים ואחזור אלייך תוך 48 שעות עם כל הפרטים:</p></div>
+            <div className="register-copy" id="register"><strong>רוצים להצטרף?</strong><p>השאירו פרטים ונחזור אליכם תוך 48 שעות עם כל המידע</p></div>
             <LeadForm idPrefix="main" />
             <p className="package__fineprint">המחיר אינו כולל ביטוח נסיעות, הוצאות אישיות וארוחות שלא צוינו. התוכנית עשויה להשתנות בהתאם למזג האוויר ולהנחיות המקומיות.</p>
           </div>
@@ -673,7 +670,7 @@ function App() {
         </section>
 
         <section className="final-register section" aria-labelledby="final-register-title">
-          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של {tripPrice} בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" compact /></div>
+          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלכם מתחיל כאן</p><h2 id="final-register-title">רוצים להצטרף?</h2><p><strong>השאירו פרטים</strong><br />ונחזור אליכם תוך 48 שעות עם כל המידע</p><LeadForm idPrefix="final" compact /></div>
         </section>
       </main>
 
