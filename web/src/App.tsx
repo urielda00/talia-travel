@@ -171,25 +171,44 @@ const previousTrips = [
   ['img12', 'רגע מטיול של טליה'],
 ]
 
-function LeadForm({ idPrefix, whatsappBase, whatsappMessage, compact = false }: { idPrefix: string; whatsappBase: string; whatsappMessage: string; compact?: boolean }) {
+function LeadForm({ idPrefix, compact = false }: { idPrefix: string; compact?: boolean }) {
+  const [submitted, setSubmitted] = useState(false)
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const message = `${whatsappMessage}\nשם: ${data.get('name')} ${data.get('lastName')}\nטלפון: ${data.get('phone')}\nאימייל: ${data.get('email')}`
-    const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT
+    setSubmitted(false)
+    const form = event.currentTarget
+    const data = new FormData(form)
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
+    const firstName = String(data.get('name') ?? '')
+    const formArea = idPrefix === 'main' ? 'טופס הרשמה ראשי' : 'טופס הרשמה תחתון'
+    const submission = new FormData()
+
+    submission.append('שם פרטי', firstName)
+    submission.append('שם משפחה', String(data.get('lastName') ?? ''))
+    submission.append('אימייל', String(data.get('email') ?? ''))
+    submission.append('טלפון', String(data.get('phone') ?? ''))
+    submission.append('אזור הטופס', formArea)
+    submission.append('אישור מדיניות פרטיות', 'אושר')
+    submission.append('access_key', accessKey)
+    submission.append('subject', `פנייה חדשה באתר Talia Travels - ${firstName}`)
 
     try {
-      if (!endpoint) throw new Error('VITE_FORMSPREE_ENDPOINT is not configured')
+      if (!accessKey) throw new Error('VITE_WEB3FORMS_ACCESS_KEY is not configured')
 
-      const response = await fetch(endpoint, {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: data,
+        body: submission,
       })
+      const result: unknown = await response.json()
 
-      if (!response.ok) throw new Error('Formspree submission failed')
+      if (!response.ok || !result || typeof result !== 'object' || !('success' in result) || result.success !== true) {
+        throw new Error('Web3Forms submission failed')
+      }
 
-      window.open(`${whatsappBase}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+      form.reset()
+      setSubmitted(true)
     } catch (error) {
       console.error('Lead form submission failed', error)
     }
@@ -200,7 +219,6 @@ function LeadForm({ idPrefix, whatsappBase, whatsappMessage, compact = false }: 
       className={`lead-form${compact ? ' lead-form--compact' : ''}`}
       onSubmit={submit}
     >
-      <input type="hidden" name="source" value={idPrefix} />
       <div className="lead-form__fields">
         <label htmlFor={`${idPrefix}-name`}><span>שם פרטי</span><input id={`${idPrefix}-name`} name="name" placeholder="שם פרטי" autoComplete="given-name" required /></label>
         <label htmlFor={`${idPrefix}-last`}><span>שם משפחה</span><input id={`${idPrefix}-last`} name="lastName" placeholder="שם משפחה" autoComplete="family-name" required /></label>
@@ -209,6 +227,7 @@ function LeadForm({ idPrefix, whatsappBase, whatsappMessage, compact = false }: 
       </div>
       <label className="lead-form__consent"><input type="checkbox" name="privacyConsent" value="accepted" required /> <span>קראתי את <a href="/privacy">מדיניות הפרטיות</a> ואני מסכימה לשמירת הפרטים לצורך יצירת קשר</span></label>
       <button type="submit">חזרי אליי עם הפרטים <span aria-hidden="true">✈</span></button>
+      {submitted && <p role="status">הפרטים התקבלו בהצלחה, נחזור אלייך בהקדם</p>}
     </form>
   )
 }
@@ -602,7 +621,7 @@ function App() {
             <div className="package__checks">{packageTrip.items.map((item, index) => <p key={index}><span aria-hidden="true">✓</span>{item}</p>)}</div>
             <div className="package__price"><p>כל החופשה במחיר מיוחד של</p><strong>{tripPrice}</strong><span>לאדם בחדר זוגי</span><small>ניתן לשלם בהעברה בנקאית או עד 10 תשלומים בכרטיס אשראי</small></div>
             <div className="register-copy" id="register"><strong>רוצה להצטרף?</strong><p>השאירי פרטים ואחזור אלייך תוך 48 שעות עם כל הפרטים:</p></div>
-            <LeadForm idPrefix="main" whatsappBase={whatsappBase} whatsappMessage={whatsappMessage} />
+            <LeadForm idPrefix="main" />
             <p className="package__fineprint">המחיר אינו כולל ביטוח נסיעות, הוצאות אישיות וארוחות שלא צוינו. התוכנית עשויה להשתנות בהתאם למזג האוויר ולהנחיות המקומיות.</p>
           </div>
         </section>
@@ -654,7 +673,7 @@ function App() {
         </section>
 
         <section className="final-register section" aria-labelledby="final-register-title">
-          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של {tripPrice} בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" whatsappBase={whatsappBase} whatsappMessage={whatsappMessage} compact /></div>
+          <div className="final-register__box content-container"><p className="section-eyebrow">המסע הבא שלך מתחיל כאן</p><h2 id="final-register-title">רוצה להצטרף?</h2><p><strong>כל החופשה במחיר מיוחד של {tripPrice} בלבד.</strong><br />השאירי פרטים, ואחזור אלייך עם כל המידע כדי שנבדוק יחד אם הטיול מתאים לך.</p><LeadForm idPrefix="final" compact /></div>
         </section>
       </main>
 
