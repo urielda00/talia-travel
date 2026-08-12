@@ -172,37 +172,35 @@ const previousTrips = [
 ]
 
 function LeadForm({ idPrefix, whatsappBase, whatsappMessage, compact = false }: { idPrefix: string; whatsappBase: string; whatsappMessage: string; compact?: boolean }) {
-  const formName = idPrefix === 'main' ? 'talia-trip-registration-main' : 'talia-trip-registration-final'
-
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     const message = `${whatsappMessage}\nשם: ${data.get('name')} ${data.get('lastName')}\nטלפון: ${data.get('phone')}\nאימייל: ${data.get('email')}`
+    const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT
 
     try {
-      await fetch('/', {
+      if (!endpoint) throw new Error('VITE_FORMSPREE_ENDPOINT is not configured')
+
+      const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams([...data.entries()].map(([key, value]) => [key, String(value)])).toString(),
+        headers: { Accept: 'application/json' },
+        body: data,
       })
-    } finally {
+
+      if (!response.ok) throw new Error('Formspree submission failed')
+
       window.open(`${whatsappBase}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+    } catch (error) {
+      console.error('Lead form submission failed', error)
     }
   }
 
   return (
     <form
       className={`lead-form${compact ? ' lead-form--compact' : ''}`}
-      name={formName}
-      data-netlify="true"
-      data-netlify-honeypot="bot-field"
       onSubmit={submit}
     >
-      <input type="hidden" name="form-name" value={formName} />
-      <p
-        aria-hidden="true"
-        style={{ position: 'absolute', overflow: 'hidden', clip: 'rect(0 0 0 0)', height: 1, width: 1, margin: -1, padding: 0, border: 0 }}
-      ><label>לא למלא אם את אנושית <input name="bot-field" tabIndex={-1} autoComplete="off" /></label></p>
+      <input type="hidden" name="source" value={idPrefix} />
       <div className="lead-form__fields">
         <label htmlFor={`${idPrefix}-name`}><span>שם פרטי</span><input id={`${idPrefix}-name`} name="name" placeholder="שם פרטי" autoComplete="given-name" required /></label>
         <label htmlFor={`${idPrefix}-last`}><span>שם משפחה</span><input id={`${idPrefix}-last`} name="lastName" placeholder="שם משפחה" autoComplete="family-name" required /></label>
